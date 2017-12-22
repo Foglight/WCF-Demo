@@ -9,3 +9,5 @@ After installed this cartridge, you will find the menus of these demos under "Ho
 2,Menu of scatter chart: Homes -> Scatter - View Selection Grid Layout
 
 3,Menu of tree map: Homes -> Tree Map With Datastore Space Data
+
+You can package the cartridge use build command by yourself, or you can get the packaged cartridge from "Packaged Cartridges" folder directly.
