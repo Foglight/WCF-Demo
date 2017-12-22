@@ -4,6 +4,8 @@ New WCF components demo, include scatter chart, tree map and geographic map, ple
 
 After installed this cartridge, you will find the menus of these demos under "Homes" node. 
     
-Menu of geographic map demo: Homes -> Map Topology With Circle Style
-Menu of scatter chart: Homes -> Scatter - View Selection Grid Layout
-Menu of tree map: Homes -> Tree Map With Datastore Space Data
+1,Menu of geographic map demo: Homes -> Map Topology With Circle Style
+
+2,Menu of scatter chart: Homes -> Scatter - View Selection Grid Layout
+
+3,Menu of tree map: Homes -> Tree Map With Datastore Space Data
