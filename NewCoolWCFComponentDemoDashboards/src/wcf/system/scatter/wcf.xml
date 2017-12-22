@@ -1,0 +1,1207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3-027" display-name="Scatter" last-entity-id="13">
+    <view id="dSUsedVsDSAllocated" display-name="Scatter - DS Used vs. DS Allocated" ts="1511939984822" public="false" component="wcf.html-chart.scatter">
+        <uuid>8475696d-b920-47b8-89d7-75bb2929f4be</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <relevant-role name="Administrator"/>
+        <relevant-role name="Operator"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectedX" data-type="wcf:String"/>
+            <entry key="selectedY" data-type="wcf:String"/>
+            <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter"/>
+            <entry key="selectedTopologyType" data-type="wcf:String"/>
+            <entry key="selectedDatastores" data-type="foglight-5:TopologyObject" list="true" usage="optional" implicit="true"/>
+            <entry key="selectedObj" data-type="foglight-5:TopologyObject" usage="optional" implicit="true"/>
+        </inputs>
+        <context>
+            <entry key="dataStores">
+                <function-rv id="system:scatter.getTopologyObjFromSpecificVC">
+                    <context-rv input-key="selectedTopologyType"/>
+                    <context-rv input-key="selectedVc"/>
+                </function-rv>
+            </entry>
+        </context>
+        <flow>
+            <on action="selection">
+                <generated-context output-key="selectedNode" custom-key="selectedObj"/>
+                <select-type-flow tag="drilldown" key="selectedObj"/>
+            </on>
+            <on action="viewSelection">
+                <generated-context output-key="selectedNodes" custom-key="selectedDatastores"/>
+                <update/>
+            </on>
+        </flow>
+        <config>
+            <property name="nodes">
+                <context-rv input-key="dataStores"/>
+            </property>
+            <property name="perNode">
+                <object>
+                    <property name="xValue">
+                        <function-rv id="system:scatter.getMetricByName" path="period/average">
+                            <context-rv input-key="selectedX"/>
+                            <context-rv input-key="currentNode"/>
+                        </function-rv>
+                    </property>
+                    <property name="yValue">
+                        <function-rv id="system:scatter.getMetricByName" path="period/average">
+                            <context-rv input-key="selectedY"/>
+                            <context-rv input-key="currentNode"/>
+                        </function-rv>
+                    </property>
+                </object>
+            </property>
+            <property name="sizing">
+                <component-sizing>
+                    <width preferred="5" minimum="5"/>
+                    <height preferred="5" minimum="5"/>
+                </component-sizing>
+            </property>
+        </config>
+    </view>
+    <view id="datastores" display-name="Datastores" ts="1511772516664" public="false" component="wcf.table.row-table">
+        <uuid>d19544e7-ec39-4905-86d6-596dd58f8c6c</uuid>
+        <purpose name="pagelet"/>
+        <relevant-role name="Administrator"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectedDatastores" data-type="foglight-5:VMWDatastore" list="true"/>
+        </inputs>
+        <flow/>
+        <config>
+            <property name="rows">
+                <context-rv input-key="selectedDatastores"/>
+            </property>
+            <property name="columns">
+                <list-value>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="aggregateState"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_0</string>
+                        </property>
+                        <property name="cellAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="center"/>
+                                </property>
+                            </object>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="name" renderer-id="system:wcf_common_ui_table.2"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_1</string>
+                        </property>
+                        <property name="cellAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="left"/>
+                                </property>
+                            </object>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="totalSpace" renderer-id="system:wcf_common_ui_table.4"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_2</string>
+                        </property>
+                        <property name="header">
+                            <i18n-rv key="system:scatter.plain.6"/>
+                        </property>
+                        <property name="cellAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="center"/>
+                                </property>
+                            </object>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="totalSpace/current/average" renderer-id="system:wcf_common_ui_table.24"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_3</string>
+                        </property>
+                        <property name="header">
+                            <i18n-rv key="system:scatter.plain.4"/>
+                        </property>
+                        <property name="cellAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="right"/>
+                                </property>
+                            </object>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="spaceUsed" renderer-id="system:wcf_common_ui_table.4"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_4</string>
+                        </property>
+                        <property name="header">
+                            <i18n-rv key="system:scatter.plain.7"/>
+                        </property>
+                        <property name="cellAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="center"/>
+                                </property>
+                            </object>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="spaceUsed/current/average" renderer-id="system:wcf_common_ui_table.24"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_5</string>
+                        </property>
+                        <property name="header">
+                            <i18n-rv key="system:scatter.plain.5"/>
+                        </property>
+                        <property name="cellAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="right"/>
+                                </property>
+                            </object>
+                        </property>
+                    </object>
+                </list-value>
+            </property>
+        </config>
+    </view>
+    <composite-view id="scatterDSUsedVsDSAllocated" display-name="Scatter - View Selection" ts="1511938304231" public="false" component="wcf.row-layout">
+        <uuid>85e2f154-a454-452d-8981-b30328c6f6b6</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <relevant-role name="Administrator"/>
+        <relevant-role name="Operator"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectedDatastores" data-type="foglight-5:VMWDatastore" list="true" usage="internal">
+                <null-rv/>
+            </entry>
+            <entry key="selectedX" data-type="wcf:String" usage="internal">
+                <null-rv/>
+            </entry>
+            <entry key="selectedY" data-type="wcf:String" usage="internal">
+                <null-rv/>
+            </entry>
+        </inputs>
+        <flow/>
+        <config/>
+        <window id="0" view="system:scatter.dSUsedVsDSAllocated">
+            <size/>
+            <config>
+                <property name="align">
+                    <enum value="stretch"/>
+                </property>
+                <property name="valign">
+                    <enum value="stretch"/>
+                </property>
+                <property name="hweight">
+                    <integer value="1"/>
+                </property>
+                <property name="vweight">
+                    <integer value="1"/>
+                </property>
+                <property name="showTitle">
+                    <boolean value="true"/>
+                </property>
+            </config>
+        </window>
+        <window id="1" view="system:scatter.datastores">
+            <size/>
+            <config>
+                <property name="row">
+                    <integer value="1"/>
+                </property>
+                <property name="align">
+                    <enum value="stretch"/>
+                </property>
+                <property name="valign">
+                    <enum value="stretch"/>
+                </property>
+                <property name="hweight">
+                    <integer value="1"/>
+                </property>
+                <property name="vweight">
+                    <integer value="1"/>
+                </property>
+                <property name="showTitle">
+                    <boolean value="true"/>
+                </property>
+            </config>
+        </window>
+    </composite-view>
+    <view id="1" display-name="Widget: Label" ts="1511936131194" component="wcf.label">
+        <uuid>5acad1f2-9562-4852-8f40-ad6ff3c85464</uuid>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="labelText" data-type="wcf:String" usage="optional">
+                <null-rv/>
+            </entry>
+        </inputs>
+        <flow/>
+        <config>
+            <property name="label">
+                <context-rv input-key="labelText"/>
+            </property>
+            <property name="sizing">
+                <component-sizing>
+                    <width preferred="120"/>
+                    <height preferred="16"/>
+                </component-sizing>
+            </property>
+            <property name="popupOptions">
+                <object>
+                    <property name="useLegacySizing">
+                        <boolean value="true"/>
+                    </property>
+                </object>
+            </property>
+        </config>
+    </view>
+    <composite-view id="scatterViewSelectionGridLayout" display-name="Scatter - View Selection Grid Layout" ts="1511942467857" component="wcf.grid2">
+        <uuid>27b7f521-f016-4415-a473-e0aa2fdc6d0e</uuid>
+        <purpose name="dashboard"/>
+        <purpose name="homepage"/>
+        <relevant-role name="Administrator"/>
+        <relevant-role name="Operator"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectedTopologyType" data-type="wcf:String" usage="internal">
+                <string xml:space="preserve">VMWDatastore</string>
+            </entry>
+            <entry key="selectedY" data-type="wcf:String" usage="internal"/>
+            <entry key="selectedX" data-type="wcf:String" usage="internal">
+                <null-rv/>
+            </entry>
+            <entry key="selectedDatastores" data-type="foglight-5:VMWDatastore" list="true" usage="internal"/>
+            <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter" usage="internal"/>
+        </inputs>
+        <flow/>
+        <config/>
+        <window id="6" view="system:scatter.1">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:scatter.plain.9"/>
+                </entry>
+            </context>
+            <config/>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:scatter.3"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="7" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="1"/>
+                </property>
+            </config>
+            <view id="nested" display-name="topologyType" ts="1511939105300" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopologyType" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedTopologyType"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <list-rv remove-nulls="false" remove-dups="false">
+                            <i18n-rv key="system:scatter.plain.11"/>
+                            <i18n-rv key="system:scatter.plain.10"/>
+                        </list-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:scatter.5">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="8" view="system:scatter.1">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:scatter.plain.20"/>
+                </entry>
+            </context>
+            <config>
+                <property name="column">
+                    <integer value="2"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:scatter.3"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="9" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="3"/>
+                </property>
+            </config>
+            <view id="nested" display-name="vc" ts="1511939296748" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedVc"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <function-rv id="system:scatter.6"/>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="0" view="system:scatter.1">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:scatter.plain.12"/>
+                </entry>
+            </context>
+            <config>
+                <property name="column">
+                    <integer value="4"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="1" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="5"/>
+                </property>
+            </config>
+            <view id="nested" display-name="type" ts="1511939417574" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopologyType" data-type="wcf:String"/>
+                    <entry key="selectedX" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedX"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <function-rv id="system:scatter.2">
+                            <context-rv input-key="selectedTopologyType"/>
+                        </function-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:scatter.4">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="4" view="system:scatter.1">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:scatter.plain.18"/>
+                </entry>
+            </context>
+            <config>
+                <property name="column">
+                    <integer value="6"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:scatter.3"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="5" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="7"/>
+                </property>
+            </config>
+            <view id="nested" display-name="yaxis" ts="1511939390785" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopologyType" data-type="wcf:String"/>
+                    <entry key="selectedY" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedY"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <function-rv id="system:scatter.2">
+                            <context-rv input-key="selectedTopologyType"/>
+                        </function-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:scatter.4">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="2" view="system:scatter.dSUsedVsDSAllocated">
+            <size width="1200"/>
+            <config>
+                <property name="colspan">
+                    <integer value="8"/>
+                </property>
+                <property name="row">
+                    <integer value="1"/>
+                </property>
+                <property name="valign">
+                    <enum value="stretch"/>
+                </property>
+                <property name="vweight">
+                    <integer value="1"/>
+                </property>
+            </config>
+        </window>
+        <window id="10" view="system:scatter.8">
+            <size width="1200"/>
+            <config>
+                <property name="colspan">
+                    <integer value="8"/>
+                </property>
+                <property name="row">
+                    <integer value="2"/>
+                </property>
+                <property name="valign">
+                    <enum value="stretch"/>
+                </property>
+                <property name="vweight">
+                    <integer value="1"/>
+                </property>
+            </config>
+        </window>
+    </composite-view>
+    <view id="7" display-name="Datastores (Row Table)" ts="1511941884601" public="false" priority="low" primary-input-key="VMWDatastores" component="wcf.table.row-table">
+        <uuid>ad4c0727-c683-4e38-aff5-484a8574701e</uuid>
+        <originating-data ts="1492673570897">
+            <uuid>ba93a09d-4f0d-4feb-9f8e-1f482b622d42</uuid>
+        </originating-data>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <purpose name="dataView"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="VMWDatastores" data-type="foglight-5:VMWDatastore" list="true"/>
+            <entry key="selectedType" data-type="wcf:String"/>
+            <entry key="datastore" data-type="foglight-5:VMWDatastore" usage="optional" implicit="true"/>
+        </inputs>
+        <context>
+            <entry key="metricName">
+                <i18n-rv key="system:scatter.plain.13"/>
+            </entry>
+            <entry key="scaleFactor">
+                <double value="1024.0"/>
+            </entry>
+            <entry key="scaledUnitsList">
+                <list-rv remove-nulls="false" remove-dups="false">
+                    <i18n-rv key="system:scatter.plain.22"/>
+                    <i18n-rv key="system:scatter.plain.23"/>
+                    <i18n-rv key="system:scatter.plain.24"/>
+                    <i18n-rv key="system:scatter.plain.25"/>
+                </list-rv>
+            </entry>
+            <entry key="selectedDatastore">
+                <function-rv id="system:scatter.10">
+                    <context-rv input-key="selectedType"/>
+                    <context-rv input-key="VMWDatastores"/>
+                </function-rv>
+            </entry>
+        </context>
+        <flow>
+            <on action="rowSelection">
+                <generated-context output-key="selectedRow" custom-key="datastore"/>
+                <generated-context output-key="selectedColumnId" custom-key="selectedColumnId"/>
+                <select-type-flow tag="drilldown" key="datastore"/>
+            </on>
+            <on action="dwell">
+                <generated-context output-key="selectedRow" custom-key="datastore"/>
+                <generated-context output-key="selectedColumnId" custom-key="selectedColumnId"/>
+                <choose-value key="selectedColumnId">
+                    <case value="c_HoursToFull">
+                        <popup id="system:_vmwwidgets.302" type="temporary">
+                            <context>
+                                <entry key="primaryText">
+                                    <i18n-rv key="system:_datastore.plain.103"/>
+                                </entry>
+                                <entry key="additionalText">
+                                    <i18n-rv key="system:_datastore.plain.128"/>
+                                </entry>
+                            </context>
+                        </popup>
+                    </case>
+                    <default>
+                        <nop/>
+                    </default>
+                </choose-value>
+            </on>
+        </flow>
+        <config>
+            <property name="rows">
+                <context-rv input-key="selectedDatastore"/>
+            </property>
+            <property name="columns">
+                <list-value>
+                    <object>
+                        <property name="value">
+                            <string-rv>
+                                <value xml:space="preserve">{0} {1}</value>
+                                <context-rv input-key="currentRow" renderer-id="system:virtualvmw.261"/>
+                                <context-rv input-key="currentRow" path="name"/>
+                            </string-rv>
+                        </property>
+                        <property name="tooltip">
+                            <context-rv input-key="currentRow" path="name"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_0</string>
+                        </property>
+                        <property name="header">
+                            <i18n-rv key="system:scatter.plain.26"/>
+                        </property>
+                        <property name="headerAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="left"/>
+                                </property>
+                            </object>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="virtualStorage/capacityUsed/current/max" renderer-id="system:virtualvmw.59"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_1</string>
+                        </property>
+                        <property name="header">
+                            <i18n-rv key="system:scatter.plain.27"/>
+                        </property>
+                        <property name="headerAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="center"/>
+                                </property>
+                            </object>
+                        </property>
+                        <property name="cellAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="center"/>
+                                </property>
+                            </object>
+                        </property>
+                        <property name="initialSortOrder">
+                            <enum value="D"/>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="virtualStorage/totalSpace/current/max" renderer-id="system:virtualvmw.50"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_2_2</string>
+                        </property>
+                        <property name="header">
+                            <i18n-rv key="system:scatter.plain.28"/>
+                        </property>
+                        <property name="headerAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="right"/>
+                                </property>
+                            </object>
+                        </property>
+                        <property name="cellAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="right"/>
+                                </property>
+                            </object>
+                        </property>
+                        <property name="initialSortOrder">
+                            <enum value="D"/>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="virtualStorage/spaceAvailable/current/max" renderer-id="system:virtualvmw.50"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_2</string>
+                        </property>
+                        <property name="header">
+                            <i18n-rv key="system:scatter.plain.29"/>
+                        </property>
+                        <property name="headerAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="right"/>
+                                </property>
+                            </object>
+                        </property>
+                        <property name="cellAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="right"/>
+                                </property>
+                            </object>
+                        </property>
+                        <property name="initialSortOrder">
+                            <enum value="D"/>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="virtualStorage/spaceUsed/current/max" renderer-id="system:virtualvmw.50"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_3</string>
+                        </property>
+                        <property name="header">
+                            <i18n-rv key="system:scatter.plain.30"/>
+                        </property>
+                        <property name="headerAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="right"/>
+                                </property>
+                            </object>
+                        </property>
+                        <property name="cellAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="right"/>
+                                </property>
+                            </object>
+                        </property>
+                        <property name="initialSortOrder">
+                            <enum value="D"/>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="virtualStorage/weeklyGrowthRate/latest/average" renderer-id="system:virtualvmw.50"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_4</string>
+                        </property>
+                        <property name="header">
+                            <i18n-rv key="system:scatter.plain.31"/>
+                        </property>
+                        <property name="headerAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="right"/>
+                                </property>
+                            </object>
+                        </property>
+                        <property name="cellAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="right"/>
+                                </property>
+                            </object>
+                        </property>
+                        <property name="initialSortOrder">
+                            <enum value="D"/>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="virtualStorage/hoursToFull/period/average"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_HoursToFull</string>
+                        </property>
+                        <property name="selectable">
+                            <boolean value="false"/>
+                        </property>
+                        <property name="header">
+                            <i18n-rv key="system:scatter.plain.32"/>
+                        </property>
+                        <property name="headerAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="right"/>
+                                </property>
+                            </object>
+                        </property>
+                        <property name="cellAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="right"/>
+                                </property>
+                            </object>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="maxFileSize" renderer-id="system:virtualvmw.50"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_6</string>
+                        </property>
+                        <property name="selectable">
+                            <boolean value="false"/>
+                        </property>
+                        <property name="header">
+                            <i18n-rv key="system:scatter.plain.33"/>
+                        </property>
+                        <property name="headerAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="right"/>
+                                </property>
+                            </object>
+                        </property>
+                        <property name="cellAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="right"/>
+                                </property>
+                            </object>
+                        </property>
+                        <property name="initialSortOrder">
+                            <enum value="D"/>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="url" renderer-id="system:scatter.13"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_8</string>
+                        </property>
+                        <property name="selectable">
+                            <boolean value="false"/>
+                        </property>
+                        <property name="visible">
+                            <boolean value="false"/>
+                        </property>
+                        <property name="header">
+                            <i18n-rv key="system:scatter.plain.34"/>
+                        </property>
+                        <property name="headerAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="left"/>
+                                </property>
+                            </object>
+                        </property>
+                        <property name="cellAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="left"/>
+                                </property>
+                            </object>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="datastoreType"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_7</string>
+                        </property>
+                        <property name="selectable">
+                            <boolean value="false"/>
+                        </property>
+                        <property name="header">
+                            <i18n-rv key="system:scatter.plain.35"/>
+                        </property>
+                        <property name="headerAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="right"/>
+                                </property>
+                            </object>
+                        </property>
+                        <property name="cellAlignment">
+                            <object>
+                                <property name="horizontal">
+                                    <enum value="right"/>
+                                </property>
+                            </object>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <function-rv id="system:scatter.12">
+                                <context-rv input-key="currentRow" path="multipleHostAccess"/>
+                            </function-rv>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_10</string>
+                        </property>
+                        <property name="header">
+                            <i18n-rv key="system:scatter.plain.36"/>
+                        </property>
+                        <property name="initialSortOrder">
+                            <enum value="D"/>
+                        </property>
+                    </object>
+                </list-value>
+            </property>
+            <property name="multipleSelection">
+                <object>
+                    <property name="showCheckboxes">
+                        <boolean value="false"/>
+                    </property>
+                    <property name="batchedSubmit">
+                        <boolean value="false"/>
+                    </property>
+                </object>
+            </property>
+            <property name="selectionConfiguration">
+                <object>
+                    <property name="autoSelectPolicy">
+                        <enum value="none"/>
+                    </property>
+                    <property name="allowReselection">
+                        <boolean value="true"/>
+                    </property>
+                </object>
+            </property>
+            <property name="rowsBackgroundColorConfiguration">
+                <object>
+                    <property name="rowBackgroundColor">
+                        <theme-rv style="alarm-count-colors" path="palette[@name='none']/background-color"/>
+                    </property>
+                    <property name="alternateRowBackgroundColor">
+                        <color value="transparent"/>
+                    </property>
+                    <property name="enableAlternateRowBackgroundColor">
+                        <boolean value="true"/>
+                    </property>
+                </object>
+            </property>
+            <property name="initialSortColumnId">
+                <string xml:space="preserve">c_0</string>
+            </property>
+            <property name="searchingConfiguration">
+                <object>
+                    <property name="enabled">
+                        <boolean value="true"/>
+                    </property>
+                </object>
+            </property>
+            <property name="sizing">
+                <component-sizing>
+                    <width preferred="300"/>
+                    <height preferred="100"/>
+                </component-sizing>
+            </property>
+            <property name="pageOptions">
+                <object>
+                    <property name="scrollbars">
+                        <enum value="auto"/>
+                    </property>
+                </object>
+            </property>
+            <property name="popupOptions">
+                <object>
+                    <property name="useLegacySizing">
+                        <boolean value="true"/>
+                    </property>
+                </object>
+            </property>
+        </config>
+    </view>
+    <view id="8" display-name="Switch By Value - Display VMware Obj" ts="1511942334393" component="wcf.switch-value">
+        <uuid>e46fa3a0-26ec-4c81-ad69-da1344b81615</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectedTopologyType" data-type="wcf:String"/>
+            <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter"/>
+            <entry key="selectedDatastores" data-type="foglight-5:TopologyObject" list="true"/>
+        </inputs>
+        <context>
+            <entry key="allVMs">
+                <function-rv id="system:scatter.11">
+                    <context-rv input-key="selectedDatastores"/>
+                </function-rv>
+            </entry>
+            <entry key="VMWDatastores">
+                <function-rv id="system:scatter.9">
+                    <context-rv input-key="selectedDatastores"/>
+                </function-rv>
+            </entry>
+            <entry key="selectedType">
+                <i18n-rv key="system:scatter.plain.37"/>
+            </entry>
+        </context>
+        <flow/>
+        <config>
+            <property name="value">
+                <context-rv input-key="selectedTopologyType"/>
+            </property>
+            <property name="views">
+                <list-value>
+                    <object>
+                        <property name="view">
+                            <view-ref value="system:_virtualmachine.314"/>
+                        </property>
+                        <property name="value">
+                            <string xml:space="preserve">VMWVirtualMachine</string>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="view">
+                            <view-ref value="system:scatter.7"/>
+                        </property>
+                        <property name="value">
+                            <i18n-rv key="system:scatter.plain.11"/>
+                        </property>
+                    </object>
+                </list-value>
+            </property>
+        </config>
+    </view>
+    <renderer id="3" display-name="Text: Gray, bold" ts="1511937418770" handler="wcf.text" value-type="wcf:String">
+        <uuid>b08974d6-a81d-4a39-9c7f-ba437d097a9a</uuid>
+        <config>
+            <property name="color">
+                <color value="#969696"/>
+            </property>
+            <property name="font-style">
+                <enum value="strong"/>
+            </property>
+        </config>
+    </renderer>
+    <renderer id="13" display-name="Font: Text Smaller" ts="1511941884604" public="false" handler="wcf.text" value-type="wcf:String">
+        <uuid>b2269a9d-61ea-4cd6-98d8-64ccac3ffc2d</uuid>
+        <originating-data ts="1270743379494">
+            <uuid>9fdec471-162b-4b71-ab70-1b24e79c465a</uuid>
+        </originating-data>
+        <config>
+            <property name="font-size">
+                <enum value="smaller"/>
+            </property>
+        </config>
+    </renderer>
+    <script-function type="groovy" id="getMetricByName" display-name="Get Metric By Name" ts="1513049955089" output-type="foglight-5:Metric" cache-results="true">
+        <uuid>74341a14-15be-4ac7-9aa2-af6d7280e640</uuid>
+        <inputs>
+            <input name="metricName" type-name="wcf:Object"/>
+            <input name="obj" type-name="foglight-5:TopologyObject"/>
+        </inputs>
+    </script-function>
+    <script-function type="groovy" id="2" display-name="Get Metric By Topology Type" ts="1511940989464" public="false" output-type="wcf:String" output-list="true" cache-results="true">
+        <uuid>6a5df414-4424-49ad-9d4c-bc4b881385af</uuid>
+        <inputs>
+            <input name="topologyType" type-name="wcf:String"/>
+        </inputs>
+    </script-function>
+    <map-function id="4" display-name="Datastore Metric Display Name Mapping" ts="1511941041785" public="false" output-type="wcf:String" cache-results="true" input-type="wcf:String">
+        <uuid>22fa3282-d358-4bec-9f8b-61f0eaf48f1c</uuid>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">spaceAvailable</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Free Space</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">spaceUsed</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Used Space</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">totalSpace</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Total Space</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">cpuUtilization</string>
+            </key>
+            <value>
+                <string xml:space="preserve">CPU Utilization</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">memoryUtilization</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Memory Utilization</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">capacityUsed</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Capacity Used</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">capacityAvailable</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Capacity Available</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">cpuReady</string>
+            </key>
+            <value>
+                <string xml:space="preserve">CPU Ready</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">cpucoStopPercent</string>
+            </key>
+            <value>
+                <string xml:space="preserve">CPU Co-Stop</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">memoryConsumed</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Memory Consumed</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">memoryAllocated</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Memory Allocated</string>
+            </value>
+        </map-entry>
+    </map-function>
+    <map-function id="5" display-name="Topology Display Name Mapping" ts="1511939076981" public="false" output-type="wcf:String" cache-results="true" input-type="wcf:String">
+        <uuid>a36ac822-dc63-494a-aa74-d1bd4a5e928f</uuid>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">VMWVirtualMachine</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Virtual Machine</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">VMWDatastore</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Datastore</string>
+            </value>
+        </map-entry>
+    </map-function>
+    <script-function type="groovy" id="6" display-name="Get All Vcs" ts="1511939277897" public="false" output-type="foglight-5:VMWVirtualCenter" output-list="true" cache-results="true">
+        <uuid>a386de42-c131-4dca-9009-8b76bd741d21</uuid>
+    </script-function>
+    <script-function type="groovy" id="getTopologyObjFromSpecificVC" display-name="Get Topology Obj From Specific VC" ts="1511939666278" public="false" output-type="foglight-5:TopologyObject" output-list="true" cache-results="true">
+        <uuid>2892b67e-1bb3-42b2-a963-ae9e6a9111e0</uuid>
+        <inputs>
+            <input name="selectedTopologyType" type-name="wcf:String"/>
+            <input name="selectedVc" type-name="foglight-5:VMWVirtualCenter"/>
+        </inputs>
+    </script-function>
+    <script-function type="groovy" id="9" display-name="Get All Datastores" ts="1511942263889" public="false" output-type="foglight-5:VMWDatastore" output-list="true" cache-results="true">
+        <uuid>d78efd42-c913-47d8-80ec-df2827a59791</uuid>
+        <inputs>
+            <input name="selectedObject" type-name="foglight-5:TopologyObject" list="true"/>
+        </inputs>
+    </script-function>
+    <script-function type="groovy" id="10" display-name="Get Selected Datastores" ts="1511941884603" public="false" output-type="foglight-5:VMWDatastore" output-list="true" cache-results="true">
+        <uuid>b632683e-d30f-419f-be0d-2f3d64b0ccf2</uuid>
+        <originating-data ts="1492673282334">
+            <uuid>724a7a43-6e7b-4fe3-98f6-f7f5c7047ab8</uuid>
+        </originating-data>
+        <inputs>
+            <input name="selectedType" type-name="wcf:String"/>
+            <input name="VMWDatastores" type-name="foglight-5:VMWDatastore" list="true"/>
+        </inputs>
+    </script-function>
+    <script-function type="groovy" id="11" display-name="Get All Vms" ts="1511942169857" public="false" output-type="foglight-5:VMWVirtualMachine" output-list="true" cache-results="true">
+        <uuid>319ca9a4-31a9-4e5a-b240-1de6e3723bba</uuid>
+        <inputs>
+            <input name="selectedObject" type-name="foglight-5:TopologyObject" list="true"/>
+        </inputs>
+    </script-function>
+    <map-function id="12" display-name="State: Datastore Host Access" ts="1511941884604" public="false" output-type="wcf:String" input-type="wcf:Boolean">
+        <uuid>7f1ad8ee-f79b-4fe2-82c4-defb8022f507</uuid>
+        <originating-data ts="1270743945832">
+            <uuid>0d7f3646-d2ca-4a74-9cec-99164e6b7a4a</uuid>
+        </originating-data>
+        <map-entry>
+            <key>
+                <boolean value="true"/>
+            </key>
+            <value>
+                <i18n-rv key="system:scatter.plain.38"/>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <boolean value="false"/>
+            </key>
+            <value>
+                <i18n-rv key="system:scatter.plain.39"/>
+            </value>
+        </map-entry>
+    </map-function>
+</module>

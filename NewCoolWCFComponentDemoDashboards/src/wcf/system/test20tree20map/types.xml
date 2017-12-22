@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<types xmlns="urn:quest-com:wcf-types-3-0">
+    <type name="TreeMapObj" extends="wcf:DataObject">
+        <set annotation="reloadable">false</set>
+        <property name="id" type="wcf:String"/>
+        <property name="name" type="wcf:String"/>
+        <property name="alarms" type="wcf:DataObject" is-many="true"/>
+        <property name="count" type="wcf:Integer"/>
+        <property name="fillColor" type="wcf:Color"/>
+        <property name="ds" type="foglight-5:VMWDatastore" is-reference="true"/>
+    </type>
+</types>

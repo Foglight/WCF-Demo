@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3-027" display-name="Test Tree Map" last-entity-id="2">
+    <view id="testWithDatastoreSpaceAvailable" display-name="Test With Datastore Space Available" ts="1512096653227" public="false" component="wcf.treemap">
+        <uuid>11c2e5ba-e3f0-4cfe-9358-4ae84af3f982</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectedMetric" data-type="wcf:String"/>
+            <entry key="selectedTopology" data-type="wcf:String"/>
+            <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter"/>
+        </inputs>
+        <context>
+            <entry key="inputObjs">
+                <function-rv id="system:test20tree20map.buildDatasotreTreeMapObj">
+                    <context-rv input-key="selectedMetric"/>
+                    <context-rv input-key="selectedTopology"/>
+                    <context-rv input-key="selectedVc"/>
+                </function-rv>
+            </entry>
+        </context>
+        <flow>
+            <on action="selection">
+                <generated-context output-key="object" custom-key="selectedItem"/>
+                <select-type-flow tag="drilldown" key="datastore">
+                    <context>
+                        <entry key="datastore">
+                            <context-rv input-key="selectedItem" cast-ds-type="test20tree20map" cast-data-type="TreeMapObj" path="ds"/>
+                        </entry>
+                    </context>
+                </select-type-flow>
+            </on>
+            <on action="dwell">
+                <generated-context output-key="object" custom-key="selectedItem"/>
+                <popup id="system:test20tree20map.lableForDatastore" type="temporary">
+                    <context>
+                        <entry key="selectedItem">
+                            <context-rv input-key="selectedItem" cast-ds-type="test20tree20map" cast-data-type="TreeMapObj"/>
+                        </entry>
+                    </context>
+                </popup>
+            </on>
+        </flow>
+        <config>
+            <property name="objectRoot">
+                <context-rv input-key="inputObjs"/>
+            </property>
+            <property name="strokeColor">
+                <color value="white"/>
+            </property>
+            <property name="dataTypeParent">
+                <object>
+                    <property name="type">
+                        <data-object-type datasource-type="test20tree20map" data-type="TreeMapObj"/>
+                    </property>
+                    <property name="ID">
+                        <context-rv input-key="currentNode" path="id"/>
+                    </property>
+                    <property name="displayName">
+                        <context-rv input-key="currentNode" path="name"/>
+                    </property>
+                    <property name="displayNumber">
+                        <context-rv input-key="currentNode" path="count"/>
+                    </property>
+                </object>
+            </property>
+        </config>
+    </view>
+    <view id="lableForDatastore" display-name="Label For Datastore" ts="1513130850608" component="wcf.label">
+        <uuid>007b6ae6-8248-4367-a2b4-811be5f02d93</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="selectedItem" data-type="test20tree20map:TreeMapObj"/>
+            <entry key="selectedMetric" data-type="wcf:String"/>
+            <entry key="selectedTopology" data-type="wcf:String"/>
+        </inputs>
+        <flow/>
+        <config>
+            <property name="label">
+                <string-rv>
+                    <value xml:space="preserve">{3}: {0}, {1}: {2}{4}</value>
+                    <context-rv input-key="selectedItem" path="name"/>
+                    <function-rv id="system:test20tree20map.datastoreMetricDisplayNameMapping">
+                        <context-rv input-key="selectedMetric"/>
+                    </function-rv>
+                    <context-rv input-key="selectedItem" path="count"/>
+                    <function-rv id="system:test20tree20map.topologyDisplayNameMapping">
+                        <context-rv input-key="selectedTopology"/>
+                    </function-rv>
+                    <function-rv id="system:test20tree20map.unitToTopologyMapping">
+                        <context-rv input-key="selectedTopology"/>
+                    </function-rv>
+                </string-rv>
+            </property>
+            <property name="title">
+                <context-rv input-key="selectedItem" path="name"/>
+            </property>
+            <property name="sizing">
+                <component-sizing>
+                    <width preferred="300" minimum="200"/>
+                    <height preferred="40" minimum="40"/>
+                </component-sizing>
+            </property>
+        </config>
+    </view>
+    <composite-view id="treeMapWithDatastoreAvailable" display-name="Tree Map With Datastore Available" ts="1512095972641" public="false" component="wcf.grid2">
+        <uuid>36c30469-0ce1-46ce-a137-535037a6d23c</uuid>
+        <purpose name="homepage"/>
+        <relevant-role name="Administrator"/>
+        <relevant-role name="Operator"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectedTopology" data-type="wcf:String" usage="internal">
+                <string xml:space="preserve">VMWVirtualMachine</string>
+            </entry>
+            <entry key="selectedMetric" data-type="wcf:String" usage="internal">
+                <string xml:space="preserve">cpuUtilization</string>
+            </entry>
+            <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter" usage="internal"/>
+        </inputs>
+        <context>
+            <entry key="vcs">
+                <function-rv id="system:test20tree20map.getAllVcs"/>
+            </entry>
+        </context>
+        <flow/>
+        <config>
+            <property name="spacing">
+                <integer value="8"/>
+            </property>
+            <property name="title">
+                <string xml:space="preserve">Tree Map With Datastore Space Data</string>
+            </property>
+        </config>
+        <window id="6" view="system:test20tree20map.2">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:test20tree20map.plain.13"/>
+                </entry>
+            </context>
+            <config/>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="7" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="1"/>
+                </property>
+            </config>
+            <view id="nested" display-name="topologyType" ts="1511925078034" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopology" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedTopology"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <list-rv merge="true" remove-nulls="true" remove-dups="true">
+                            <i18n-rv key="system:test20tree20map.plain.14"/>
+                            <i18n-rv key="system:test20tree20map.plain.15"/>
+                        </list-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:test20tree20map.topologyDisplayNameMapping">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="4" view="system:test20tree20map.2">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:test20tree20map.plain.12"/>
+                </entry>
+            </context>
+            <config>
+                <property name="column">
+                    <integer value="2"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="5" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="3"/>
+                </property>
+            </config>
+            <view id="nested" display-name="vc list" ts="1511860424124" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="vcs" data-type="foglight-5:VMWVirtualCenter" list="true"/>
+                    <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedVc"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <context-rv input-key="vcs"/>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="2" view="system:test20tree20map.2">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:test20tree20map.plain.21"/>
+                </entry>
+            </context>
+            <config>
+                <property name="column">
+                    <integer value="4"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="3" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="5"/>
+                </property>
+            </config>
+            <view id="nested" display-name="Selected Metric" ts="1511925565645" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopology" data-type="wcf:String"/>
+                    <entry key="selectedMetric" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedMetric"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <function-rv id="system:test20tree20map.getMetricByTopologyType">
+                            <context-rv input-key="selectedTopology"/>
+                        </function-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:test20tree20map.datastoreMetricDisplayNameMapping">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="0" view="system:test20tree20map.testWithDatastoreSpaceAvailable">
+            <size width="1000"/>
+            <config>
+                <property name="colspan">
+                    <integer value="6"/>
+                </property>
+                <property name="row">
+                    <integer value="1"/>
+                </property>
+                <property name="valign">
+                    <enum value="stretch"/>
+                </property>
+                <property name="vweight">
+                    <integer value="1"/>
+                </property>
+            </config>
+        </window>
+        <window id="8" view="system:test20tree20map.switchByValueDisplayVMwareObj">
+            <size width="1000"/>
+            <config>
+                <property name="colspan">
+                    <integer value="6"/>
+                </property>
+                <property name="row">
+                    <integer value="2"/>
+                </property>
+                <property name="valign">
+                    <enum value="stretch"/>
+                </property>
+                <property name="vweight">
+                    <integer value="1"/>
+                </property>
+            </config>
+        </window>
+    </composite-view>
+    <view id="2" display-name="Widget: Label" ts="1511936118427" component="wcf.label">
+        <uuid>b1301cd9-01cf-44ba-a023-f5b609633890</uuid>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="labelText" data-type="wcf:String" usage="optional">
+                <null-rv/>
+            </entry>
+        </inputs>
+        <flow/>
+        <config>
+            <property name="label">
+                <context-rv input-key="labelText"/>
+            </property>
+            <property name="sizing">
+                <component-sizing>
+                    <width preferred="120"/>
+                    <height preferred="16"/>
+                </component-sizing>
+            </property>
+            <property name="popupOptions">
+                <object>
+                    <property name="useLegacySizing">
+                        <boolean value="true"/>
+                    </property>
+                </object>
+            </property>
+        </config>
+    </view>
+    <view id="switchByValueDisplayVMwareObj" display-name="Switch By Value - Display VMware Obj" ts="1511941862686" component="wcf.switch-value">
+        <uuid>55d73ed9-77d9-4767-948a-c4548e387b09</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectedTopology" data-type="wcf:String"/>
+            <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter"/>
+            <entry key="selectedMetric" data-type="wcf:String"/>
+        </inputs>
+        <context>
+            <entry key="allVMs">
+                <function-rv id="system:test20tree20map.getAllVms">
+                    <context-rv input-key="selectedVc"/>
+                </function-rv>
+            </entry>
+            <entry key="VMWDatastores">
+                <function-rv id="system:test20tree20map.getAllDatastores">
+                    <context-rv input-key="selectedVc"/>
+                </function-rv>
+            </entry>
+            <entry key="selectedType">
+                <i18n-rv key="system:test20tree20map.plain.20"/>
+            </entry>
+        </context>
+        <flow/>
+        <config>
+            <property name="value">
+                <context-rv input-key="selectedTopology"/>
+            </property>
+            <property name="views">
+                <list-value>
+                    <object>
+                        <property name="view">
+                            <view-ref value="system:_virtualmachine.314"/>
+                        </property>
+                        <property name="value">
+                            <string xml:space="preserve">VMWVirtualMachine</string>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="view">
+                            <view-ref value="system:_datastore.672"/>
+                        </property>
+                        <property name="value">
+                            <i18n-rv key="system:test20tree20map.plain.14"/>
+                        </property>
+                    </object>
+                </list-value>
+            </property>
+        </config>
+    </view>
+    <renderer id="1" display-name="Text: Gray, bold" ts="1511767418245" handler="wcf.text" value-type="wcf:String">
+        <uuid>b6aa0417-a61b-42b4-b651-6eb5c7367624</uuid>
+        <config>
+            <property name="color">
+                <color value="#969696"/>
+            </property>
+            <property name="font-style">
+                <enum value="strong"/>
+            </property>
+        </config>
+    </renderer>
+    <script-function type="groovy" id="buildDatasotreTreeMapObj" display-name="Build Datasotre Tree Map Obj" ts="1511926604712" public="false" output-type="wcf:DataObject" output-list="true" cache-results="true">
+        <uuid>6cfe1225-5d40-4fab-ab74-0c9c749b5f67</uuid>
+        <inputs>
+            <input name="metricName" type-name="wcf:String"/>
+            <input name="topologyType" type-name="wcf:String"/>
+            <input name="selectedVc" type-name="foglight-5:VMWVirtualCenter"/>
+        </inputs>
+    </script-function>
+    <script-function type="groovy" id="getAllDatastores" display-name="Get All Datastores" ts="1511934765450" public="false" output-type="foglight-5:VMWDatastore" output-list="true" cache-results="true">
+        <uuid>b61e756c-57cb-4fc3-899f-f0480a4227f0</uuid>
+        <inputs>
+            <input name="selectedVc" type-name="foglight-5:VMWVirtualCenter"/>
+        </inputs>
+    </script-function>
+    <map-function id="datastoreMetricDisplayNameMapping" display-name="Datastore Metric Display Name Mapping" ts="1513044249472" output-type="wcf:String" cache-results="true" input-type="wcf:String">
+        <uuid>f56d0884-b968-4648-8973-b91ac80ba241</uuid>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">spaceAvailable</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Free Space</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">spaceUsed</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Used Space</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">totalSpace</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Total Space</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">cpuUtilization</string>
+            </key>
+            <value>
+                <string xml:space="preserve">CPU Utilization</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">memoryUtilization</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Memory Utilization</string>
+            </value>
+        </map-entry>
+    </map-function>
+    <script-function type="groovy" id="getAllVcs" display-name="Get All Vcs" ts="1513044012977" output-type="foglight-5:VMWVirtualCenter" output-list="true" cache-results="true">
+        <uuid>e287beaf-e1de-4e36-bee0-8e7ef9ed16b2</uuid>
+    </script-function>
+    <map-function id="topologyDisplayNameMapping" display-name="Topology Display Name Mapping" ts="1513043849747" output-type="wcf:String" cache-results="true" input-type="wcf:String">
+        <uuid>83ad2447-79b5-4df5-84f0-0bcbdda91279</uuid>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">VMWVirtualMachine</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Virtual Machine</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">VMWDatastore</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Datastore</string>
+            </value>
+        </map-entry>
+    </map-function>
+    <script-function type="groovy" id="getMetricByTopologyType" display-name="Get Metric By Topology Type" ts="1513044224904" output-type="wcf:String" output-list="true" cache-results="true">
+        <uuid>0352b6d1-ec30-4146-a63a-5b250fd905e7</uuid>
+        <inputs>
+            <input name="topologyType" type-name="wcf:String"/>
+        </inputs>
+    </script-function>
+    <map-function id="unitToTopologyMapping" display-name="Unit To Topology Mapping" ts="1513131855808" output-type="wcf:String" cache-results="true" input-type="wcf:String">
+        <uuid>7dc86262-4e48-45f2-9ab0-cad668d9985e</uuid>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">VMWDatastore</string>
+            </key>
+            <value>
+                <string xml:space="preserve">GB</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">VMWVirtualMachine</string>
+            </key>
+            <value>
+                <string xml:space="preserve">%</string>
+            </value>
+        </map-entry>
+    </map-function>
+    <script-function type="groovy" id="getAllVms" display-name="Get All Vms" ts="1511934974532" public="false" output-type="foglight-5:VMWVirtualMachine" output-list="true" cache-results="true">
+        <uuid>67b511af-6928-4fac-b0a4-4585a0d5d835</uuid>
+        <inputs>
+            <input name="selectedVc" type-name="foglight-5:VMWVirtualCenter"/>
+        </inputs>
+    </script-function>
+</module>

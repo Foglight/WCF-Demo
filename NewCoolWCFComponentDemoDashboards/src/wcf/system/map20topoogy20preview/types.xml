@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<types xmlns="urn:quest-com:wcf-types-3-0">
+    <type name="GPSMapData" extends="wcf:GPSGeolocation">
+        <set annotation="reloadable">false</set>
+        <property name="value" type="wcf:Double"/>
+        <property name="name" type="wcf:String"/>
+        <property name="obj" type="foglight-5:TopologyObject"/>
+    </type>
+</types>

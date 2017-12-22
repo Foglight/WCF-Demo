@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3-027" display-name="Map Topoogy Preview" last-entity-id="7">
+    <relevant-role name="API Access"/>
+    <relevant-role name="Administrator"/>
+    <relevant-role name="Advanced Operator"/>
+    <relevant-role name="Cartridge Developer"/>
+    <relevant-role name="Command Line Access"/>
+    <relevant-role name="Core Reports"/>
+    <relevant-role name="Dashboard Designer"/>
+    <relevant-role name="Dashboard User"/>
+    <relevant-role name="General Access"/>
+    <relevant-role name="Operator"/>
+    <relevant-role name="Report Manager"/>
+    <relevant-role name="Security"/>
+    <relevant-role name="Support"/>
+    <relevant-role name="VMware Administrator"/>
+    <relevant-role name="VMware Automation User"/>
+    <relevant-role name="VMware Operator User"/>
+    <relevant-role name="VMware QuickView User"/>
+    <relevant-role name="VMware Report User"/>
+    <view id="4" display-name="GPS Map Topology" ts="1512972680033" component="wcf.topology.map">
+        <uuid>8b14a124-26c8-4362-acdf-119a3272f750</uuid>
+        <purpose name="dashboard"/>
+        <purpose name="homepage"/>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <purpose name="report"/>
+        <purpose name="reportlet"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+        </inputs>
+        <flow/>
+        <config>
+            <property name="allNodes">
+                <list-value>
+                    <object>
+                        <property name="nodes">
+                            <function-rv id="system:map20topoogy20preview.3"/>
+                        </property>
+                    </object>
+                </list-value>
+            </property>
+            <property name="tags">
+                <list>
+                    <string xml:space="preserve">GPSMapNode</string>
+                </list>
+            </property>
+        </config>
+    </view>
+    <view id="5" display-name="Map Topology with Circle style" ts="1513065136331" component="wcf.topology.map">
+        <uuid>14ab24ed-81be-43c3-b228-24ce897cd1d5</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <purpose name="portal"/>
+        <purpose name="portlet"/>
+        <purpose name="report"/>
+        <purpose name="reportlet"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+        </inputs>
+        <flow/>
+        <config>
+            <property name="allNodes">
+                <list-value>
+                    <object>
+                        <property name="nodes">
+                            <function-rv id="system:map20topoogy20preview.3"/>
+                        </property>
+                    </object>
+                </list-value>
+            </property>
+            <property name="tags">
+                <list>
+                    <string xml:space="preserve">GPSMapNode</string>
+                </list>
+            </property>
+            <property name="indicatorType">
+                <enum value="circle"/>
+            </property>
+        </config>
+    </view>
+    <composite-view id="mapTopologyWithCircleStyle" display-name="Map Topology With Circle Style" ts="1513065145246" public="false" component="wcf.grid2">
+        <uuid>19eb95eb-40e5-4380-be4d-133228c4fd0e</uuid>
+        <purpose name="dashboard"/>
+        <purpose name="homepage"/>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectedTopology" data-type="wcf:String" usage="internal">
+                <string xml:space="preserve">VMWVirtualMachine</string>
+            </entry>
+            <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter" usage="internal"/>
+            <entry key="selectedMetric" data-type="wcf:String" usage="internal"/>
+        </inputs>
+        <context>
+            <entry key="vcs">
+                <function-rv id="system:test20tree20map.getAllVcs"/>
+            </entry>
+            <entry key="gpsObjs">
+                <function-rv id="system:map20topoogy20preview.generateGPSMapDataByVC">
+                    <context-rv input-key="selectedMetric"/>
+                    <context-rv input-key="selectedTopology"/>
+                    <context-rv input-key="selectedVc"/>
+                </function-rv>
+            </entry>
+        </context>
+        <flow/>
+        <config/>
+        <window id="0" view="system:map20topoogy20preview.widgetLabel">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:map20topoogy20preview.plain.7"/>
+                </entry>
+            </context>
+            <config>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="1" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="1"/>
+                </property>
+            </config>
+            <view id="nested" display-name="topologyType" ts="1513043881815" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopology" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedTopology"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <list-rv merge="true" remove-nulls="true" remove-dups="false">
+                            <i18n-rv key="system:map20topoogy20preview.plain.8"/>
+                            <i18n-rv key="system:map20topoogy20preview.plain.9"/>
+                        </list-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:test20tree20map.topologyDisplayNameMapping">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="2" view="system:map20topoogy20preview.widgetLabel">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:map20topoogy20preview.plain.10"/>
+                </entry>
+            </context>
+            <config>
+                <property name="column">
+                    <integer value="2"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="3" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="3"/>
+                </property>
+            </config>
+            <view id="nested" display-name="vc list" ts="1513044085874" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="vcs" data-type="foglight-5:VMWVirtualCenter" list="true"/>
+                    <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedVc"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <context-rv input-key="vcs"/>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="4" view="system:map20topoogy20preview.widgetLabel">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:map20topoogy20preview.plain.11"/>
+                </entry>
+            </context>
+            <config>
+                <property name="column">
+                    <integer value="4"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="5" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="5"/>
+                </property>
+            </config>
+            <view id="nested" display-name="Selected Metric" ts="1513044361293" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopology" data-type="wcf:String"/>
+                    <entry key="selectedMetric" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedMetric"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <function-rv id="system:test20tree20map.getMetricByTopologyType">
+                            <context-rv input-key="selectedTopology"/>
+                        </function-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:test20tree20map.datastoreMetricDisplayNameMapping">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="8" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="6"/>
+                </property>
+            </config>
+            <view id="nested" display-name="update" ts="1513046759515" public="false" component="wcf.input.button">
+                <inputs>
+                    <entry key="gpsObjs" data-type="map20topoogy20preview:GPSMapData" list="true"/>
+                </inputs>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="label">
+                        <string-rv>
+                            <value xml:space="preserve">Click to update the longitude and latitude </value>
+                        </string-rv>
+                    </property>
+                    <property name="background">
+                        <object>
+                            <property name="color">
+                                <color value="#f37900"/>
+                            </property>
+                        </object>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="6" view="system:map20topoogy20preview.mapVMwareTopologywithCirclestyle">
+            <size width="1200"/>
+            <config>
+                <property name="colspan">
+                    <integer value="7"/>
+                </property>
+                <property name="row">
+                    <integer value="1"/>
+                </property>
+                <property name="valign">
+                    <enum value="stretch"/>
+                </property>
+                <property name="vweight">
+                    <integer value="1"/>
+                </property>
+            </config>
+        </window>
+        <window id="7" view="system:map20topoogy20preview.showLongitudeAndLatitudeForVMwareObjs">
+            <size width="1200"/>
+            <config>
+                <property name="colspan">
+                    <integer value="7"/>
+                </property>
+                <property name="row">
+                    <integer value="2"/>
+                </property>
+                <property name="valign">
+                    <enum value="stretch"/>
+                </property>
+                <property name="vweight">
+                    <integer value="1"/>
+                </property>
+            </config>
+        </window>
+    </composite-view>
+    <view id="widgetLabel" display-name="Widget: Label" ts="1513043680931" component="wcf.label">
+        <uuid>9563f905-05a5-4853-927a-2c4a74df1884</uuid>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="labelText" data-type="wcf:String" usage="optional">
+                <null-rv/>
+            </entry>
+        </inputs>
+        <flow/>
+        <config>
+            <property name="label">
+                <context-rv input-key="labelText"/>
+            </property>
+            <property name="sizing">
+                <component-sizing>
+                    <width preferred="120"/>
+                    <height preferred="16"/>
+                </component-sizing>
+            </property>
+            <property name="popupOptions">
+                <object>
+                    <property name="useLegacySizing">
+                        <boolean value="true"/>
+                    </property>
+                </object>
+            </property>
+        </config>
+    </view>
+    <view id="mapVMwareTopologywithCirclestyle" display-name="Map VMware Topology with Circle style" ts="1513045413721" component="wcf.topology.map">
+        <uuid>a493b682-cfc6-47dc-9fcc-06509440535c</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <purpose name="portal"/>
+        <purpose name="portlet"/>
+        <purpose name="report"/>
+        <purpose name="reportlet"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectedTopology" data-type="wcf:String"/>
+            <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter"/>
+            <entry key="selectedMetric" data-type="wcf:String"/>
+            <entry key="gpsObjs" data-type="wcf:DataObject" list="true"/>
+        </inputs>
+        <flow/>
+        <config>
+            <property name="allNodes">
+                <list-value>
+                    <object>
+                        <property name="nodes">
+                            <context-rv input-key="gpsObjs"/>
+                        </property>
+                    </object>
+                </list-value>
+            </property>
+            <property name="tags">
+                <list>
+                    <string xml:space="preserve">GPSMapNode</string>
+                </list>
+            </property>
+            <property name="indicatorType">
+                <enum value="circle"/>
+            </property>
+        </config>
+    </view>
+    <view id="showLongitudeAndLatitudeForVMwareObjs" display-name="Show Longitude And Latitude For VMware Objs" ts="1513132278612" public="false" component="wcf.table.row-table">
+        <uuid>79868cb0-fb7b-4071-8c53-38d685a43f3d</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="gpsObjs" data-type="map20topoogy20preview:GPSMapData" list="true"/>
+            <entry key="selectedTopology" data-type="wcf:String"/>
+            <entry key="selectedMetric" data-type="wcf:String"/>
+            <entry key="selectedItem" data-type="map20topoogy20preview:GPSMapData" usage="optional" implicit="true"/>
+        </inputs>
+        <flow>
+            <on action="rowSelection">
+                <generated-context output-key="selectedRow" custom-key="selectedItem"/>
+                <select-type-flow tag="drilldown" key="obj">
+                    <context>
+                        <entry key="obj">
+                            <context-rv input-key="selectedItem" path="obj"/>
+                        </entry>
+                    </context>
+                </select-type-flow>
+            </on>
+        </flow>
+        <config>
+            <property name="rows">
+                <context-rv input-key="gpsObjs"/>
+            </property>
+            <property name="columns">
+                <list-value>
+                    <object>
+                        <property name="value">
+                            <string-rv>
+                                <value xml:space="preserve">{0} {1}</value>
+                                <function-rv id="system:virtualvmw.1122" renderer-id="system:virtualvmw.261">
+                                    <context-rv input-key="currentRow" path="obj"/>
+                                    <string-rv>
+                                        <value xml:space="preserve"> </value>
+                                    </string-rv>
+                                </function-rv>
+                                <context-rv input-key="currentRow" path="name"/>
+                            </string-rv>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_0</string>
+                        </property>
+                        <property name="header">
+                            <function-rv id="system:test20tree20map.topologyDisplayNameMapping">
+                                <context-rv input-key="selectedTopology"/>
+                            </function-rv>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="longitude"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_1</string>
+                        </property>
+                        <property name="header">
+                            <string xml:space="preserve">longitude</string>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="latitude"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_2</string>
+                        </property>
+                        <property name="header">
+                            <string xml:space="preserve">latitude</string>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <string-rv>
+                                <value xml:space="preserve">{0} {1}</value>
+                                <context-rv input-key="currentRow" path="value"/>
+                                <function-rv id="system:test20tree20map.unitToTopologyMapping">
+                                    <context-rv input-key="selectedTopology"/>
+                                </function-rv>
+                            </string-rv>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">c_3</string>
+                        </property>
+                        <property name="header">
+                            <function-rv id="system:test20tree20map.datastoreMetricDisplayNameMapping">
+                                <context-rv input-key="selectedMetric"/>
+                            </function-rv>
+                        </property>
+                        <property name="sortColumnIds">
+                            <list-value>
+                                <string xml:space="preserve">value</string>
+                            </list-value>
+                        </property>
+                    </object>
+                    <object>
+                        <property name="value">
+                            <context-rv input-key="currentRow" path="value"/>
+                        </property>
+                        <property name="id">
+                            <string xml:space="preserve">value</string>
+                        </property>
+                        <property name="visible">
+                            <boolean value="false"/>
+                        </property>
+                        <property name="initialSortOrder">
+                            <enum value="D"/>
+                        </property>
+                    </object>
+                </list-value>
+            </property>
+            <property name="initialSortColumnId">
+                <string xml:space="preserve">value</string>
+            </property>
+        </config>
+    </view>
+    <view id="6" display-name="Label For Datastore" ts="1513130905334" component="wcf.label">
+        <uuid>3505d58f-87dc-4719-88dc-bf7f71fe815e</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="selectedItem" data-type="map20topoogy20preview:GPSMapData"/>
+            <entry key="selectedMetric" data-type="wcf:String"/>
+            <entry key="selectedTopology" data-type="wcf:String"/>
+        </inputs>
+        <flow/>
+        <config>
+            <property name="label">
+                <string-rv>
+                    <value xml:space="preserve">{3}: {0}, {1}: {2}{4}</value>
+                    <context-rv input-key="selectedItem" path="name"/>
+                    <function-rv id="system:test20tree20map.datastoreMetricDisplayNameMapping">
+                        <context-rv input-key="selectedMetric"/>
+                    </function-rv>
+                    <context-rv input-key="selectedItem" path="value"/>
+                    <function-rv id="system:test20tree20map.topologyDisplayNameMapping">
+                        <context-rv input-key="selectedTopology"/>
+                    </function-rv>
+                    <function-rv id="system:map20topoogy20preview.7">
+                        <context-rv input-key="selectedTopology"/>
+                    </function-rv>
+                </string-rv>
+            </property>
+            <property name="title">
+                <context-rv input-key="selectedItem" path="name"/>
+            </property>
+            <property name="sizing">
+                <component-sizing>
+                    <width preferred="300" minimum="200"/>
+                    <height preferred="40" minimum="40"/>
+                </component-sizing>
+            </property>
+        </config>
+    </view>
+    <association usage="mapNode" id="1" display-name="GPS  Map Node" ts="1513131439632" public="false">
+        <uuid>56d6f79b-3fe1-4368-8e54-767a4bc796d7</uuid>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="currentNode" data-type="map20topoogy20preview:GPSMapData"/>
+        </inputs>
+        <config>
+            <property name="location">
+                <context-rv input-key="currentNode"/>
+            </property>
+            <property name="value">
+                <context-rv input-key="currentNode" path="value"/>
+            </property>
+            <property name="severity">
+                <function-rv id="system:map20topoogy20preview.2">
+                    <context-rv input-key="currentNode" path="value"/>
+                </function-rv>
+            </property>
+            <property name="tags">
+                <list-value>
+                    <string xml:space="preserve">GPSMapNode</string>
+                </list-value>
+            </property>
+            <property name="selection">
+                <popup id="system:map20topoogy20preview.6" type="temporary">
+                    <context>
+                        <entry key="selectedItem">
+                            <context-rv input-key="currentNode"/>
+                        </entry>
+                    </context>
+                </popup>
+            </property>
+        </config>
+    </association>
+    <script-map-function type="groovy" id="2" display-name="GPS Severity Mapping" ts="1512963647093" public="false" output-type="wcf:Severity" cache-results="true" map-input-type="wcf:String">
+        <uuid>e2e037da-e3d4-438a-a846-36f84c174956</uuid>
+        <script-inputs>
+            <input name="testValue" type-name="wcf:Integer"/>
+        </script-inputs>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">A</string>
+            </key>
+            <value>
+                <enum value="warning" type="wcf:Severity"/>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">B</string>
+            </key>
+            <value>
+                <enum value="critical" type="wcf:Severity"/>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">C</string>
+            </key>
+            <value>
+                <enum value="fatal" type="wcf:Severity"/>
+            </value>
+        </map-entry>
+    </script-map-function>
+    <script-function type="groovy" id="3" display-name="Generate GPS Map Data" ts="1512963662216" public="false" output-type="wcf:DataObject" output-list="true" cache-results="true">
+        <uuid>38aa0324-720d-48e2-baee-aa07e077776a</uuid>
+    </script-function>
+    <script-function type="groovy" id="generateGPSMapDataByVC" display-name="Generate GPS Map Data By VC" ts="1513049881214" public="false" output-type="map20topoogy20preview:GPSMapData" output-list="true" cache-results="true">
+        <uuid>fd265951-c5de-4b09-a77c-32382b2fdc81</uuid>
+        <inputs>
+            <input name="metricName" type-name="wcf:String"/>
+            <input name="topologyType" type-name="wcf:String"/>
+            <input name="selectedVc" type-name="foglight-5:VMWVirtualCenter"/>
+        </inputs>
+    </script-function>
+    <map-function id="7" display-name="Unit To Topology Mapping" ts="1513130866947" public="false" output-type="wcf:String" cache-results="true" input-type="wcf:String">
+        <uuid>c4ad95d6-7dbd-4706-8048-049b4bb24af6</uuid>
+        <originating-data ts="1511926779376">
+            <uuid>7dc86262-4e48-45f2-9ab0-cad668d9985e</uuid>
+        </originating-data>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">VMWDatastore</string>
+            </key>
+            <value>
+                <string xml:space="preserve">GB</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">VMWVirtualMachine</string>
+            </key>
+            <value>
+                <string xml:space="preserve">%</string>
+            </value>
+        </map-entry>
+    </map-function>
+</module>
