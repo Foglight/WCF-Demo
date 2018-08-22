@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3-027" display-name="Scatter" last-entity-id="13">
-    <view id="dSUsedVsDSAllocated" display-name="Scatter - DS Used vs. DS Allocated" ts="1511939984822" public="false" component="wcf.html-chart.scatter">
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3-027" display-name="Scatterplot Preview" last-entity-id="14" parent="system:cj_dev_environment20insights">
+    <view id="dSUsedVsDSAllocated" display-name="Scatter - DS Used vs. DS Allocated" ts="1517553626937" public="false" component="wcf.html-chart.scatter">
         <uuid>8475696d-b920-47b8-89d7-75bb2929f4be</uuid>
         <purpose name="page"/>
         <purpose name="pagelet"/>
@@ -12,6 +12,8 @@
             <entry key="selectedY" data-type="wcf:String"/>
             <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter"/>
             <entry key="selectedTopologyType" data-type="wcf:String"/>
+            <entry key="colorMetric" data-type="wcf:String"/>
+            <entry key="colorPattern" data-type="wcf:String"/>
             <entry key="selectedDatastores" data-type="foglight-5:TopologyObject" list="true" usage="optional" implicit="true"/>
             <entry key="selectedObj" data-type="foglight-5:TopologyObject" usage="optional" implicit="true"/>
         </inputs>
@@ -20,6 +22,13 @@
                 <function-rv id="system:scatter.getTopologyObjFromSpecificVC">
                     <context-rv input-key="selectedTopologyType"/>
                     <context-rv input-key="selectedVc"/>
+                </function-rv>
+            </entry>
+            <entry key="maxColorValue">
+                <function-rv id="system:scatter.getMaxMetricValueForSpecificType">
+                    <context-rv input-key="selectedTopologyType"/>
+                    <context-rv input-key="selectedVc"/>
+                    <context-rv input-key="colorMetric"/>
                 </function-rv>
             </entry>
         </context>
@@ -49,6 +58,16 @@
                         <function-rv id="system:scatter.getMetricByName" path="period/average">
                             <context-rv input-key="selectedY"/>
                             <context-rv input-key="currentNode"/>
+                        </function-rv>
+                    </property>
+                    <property name="color">
+                        <function-rv id="system:scatter.generateColorBySelectedMetric">
+                            <function-rv id="system:scatter.getMetricByName" path="period/average">
+                                <context-rv input-key="colorMetric"/>
+                                <context-rv input-key="currentNode"/>
+                            </function-rv>
+                            <context-rv input-key="maxColorValue"/>
+                            <context-rv input-key="colorPattern"/>
                         </function-rv>
                     </property>
                 </object>
@@ -274,10 +293,9 @@
             </property>
         </config>
     </view>
-    <composite-view id="scatterViewSelectionGridLayout" display-name="Scatter - View Selection Grid Layout" ts="1511942467857" component="wcf.grid2">
+    <composite-view id="scatterViewSelectionGridLayout" display-name="Scatter - View Selection Grid Layout" ts="1517552795600" component="wcf.grid2">
         <uuid>27b7f521-f016-4415-a473-e0aa2fdc6d0e</uuid>
         <purpose name="dashboard"/>
-        <purpose name="homepage"/>
         <relevant-role name="Administrator"/>
         <relevant-role name="Operator"/>
         <inputs>
@@ -285,214 +303,52 @@
             <entry key="selectedTopologyType" data-type="wcf:String" usage="internal">
                 <string xml:space="preserve">VMWDatastore</string>
             </entry>
-            <entry key="selectedY" data-type="wcf:String" usage="internal"/>
+            <entry key="selectedY" data-type="wcf:String" usage="internal">
+                <null-rv/>
+            </entry>
             <entry key="selectedX" data-type="wcf:String" usage="internal">
                 <null-rv/>
             </entry>
-            <entry key="selectedDatastores" data-type="foglight-5:VMWDatastore" list="true" usage="internal"/>
-            <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter" usage="internal"/>
+            <entry key="selectedDatastores" data-type="foglight-5:VMWDatastore" list="true" usage="internal">
+                <null-rv/>
+            </entry>
+            <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter" usage="internal">
+                <null-rv/>
+            </entry>
+            <entry key="colorMetric" data-type="wcf:String" usage="internal">
+                <null-rv/>
+            </entry>
+            <entry key="colorPattern" data-type="wcf:String" usage="internal">
+                <null-rv/>
+            </entry>
         </inputs>
         <flow/>
         <config/>
-        <window id="6" view="system:scatter.1">
-            <size/>
-            <context>
-                <entry key="labelText">
-                    <i18n-rv key="system:scatter.plain.9"/>
-                </entry>
-            </context>
-            <config/>
-            <config-override type="component.wcf.label:Root">
-                <property name="label">
-                    <context-rv input-key="labelText" renderer-id="system:scatter.3"/>
-                </property>
-            </config-override>
-        </window>
-        <window id="7" view="nested">
-            <size/>
+        <window id="3" view="system:scatter.14">
+            <size height="20"/>
             <config>
-                <property name="column">
+                <property name="align">
+                    <enum value="stretch"/>
+                </property>
+                <property name="hweight">
                     <integer value="1"/>
                 </property>
             </config>
-            <view id="nested" display-name="topologyType" ts="1511939105300" public="false" component="wcf.drop-down">
-                <inputs>
-                    <entry key="selectedTopologyType" data-type="wcf:String" usage="optional" implicit="true"/>
-                </inputs>
-                <generated-context output-key="selectedItem" custom-key="selectedTopologyType"/>
-                <flow>
-                    <on action="selection">
-                        <update/>
-                    </on>
-                </flow>
-                <config>
-                    <property name="items">
-                        <list-rv remove-nulls="false" remove-dups="false">
-                            <i18n-rv key="system:scatter.plain.11"/>
-                            <i18n-rv key="system:scatter.plain.10"/>
-                        </list-rv>
-                    </property>
-                    <property name="itemLabel">
-                        <function-rv id="system:scatter.5">
-                            <context-rv input-key="currentItem"/>
-                        </function-rv>
-                    </property>
-                </config>
-            </view>
-        </window>
-        <window id="8" view="system:scatter.1">
-            <size/>
-            <context>
-                <entry key="labelText">
-                    <i18n-rv key="system:scatter.plain.20"/>
-                </entry>
-            </context>
-            <config>
-                <property name="column">
-                    <integer value="2"/>
-                </property>
-            </config>
-            <config-override type="component.wcf.label:Root">
-                <property name="label">
-                    <context-rv input-key="labelText" renderer-id="system:scatter.3"/>
-                </property>
-            </config-override>
-        </window>
-        <window id="9" view="nested">
-            <size/>
-            <config>
-                <property name="column">
-                    <integer value="3"/>
-                </property>
-            </config>
-            <view id="nested" display-name="vc" ts="1511939296748" public="false" component="wcf.drop-down">
-                <inputs>
-                    <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter" usage="optional" implicit="true"/>
-                </inputs>
-                <generated-context output-key="selectedItem" custom-key="selectedVc"/>
-                <flow>
-                    <on action="selection">
-                        <update/>
-                    </on>
-                </flow>
-                <config>
-                    <property name="items">
-                        <function-rv id="system:scatter.6"/>
-                    </property>
-                </config>
-            </view>
-        </window>
-        <window id="0" view="system:scatter.1">
-            <size/>
-            <context>
-                <entry key="labelText">
-                    <i18n-rv key="system:scatter.plain.12"/>
-                </entry>
-            </context>
-            <config>
-                <property name="column">
-                    <integer value="4"/>
-                </property>
-            </config>
-            <config-override type="component.wcf.label:Root">
-                <property name="label">
-                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
-                </property>
-            </config-override>
-        </window>
-        <window id="1" view="nested">
-            <size/>
-            <config>
-                <property name="column">
-                    <integer value="5"/>
-                </property>
-            </config>
-            <view id="nested" display-name="type" ts="1511939417574" public="false" component="wcf.drop-down">
-                <inputs>
-                    <entry key="selectedTopologyType" data-type="wcf:String"/>
-                    <entry key="selectedX" data-type="wcf:String" usage="optional" implicit="true"/>
-                </inputs>
-                <generated-context output-key="selectedItem" custom-key="selectedX"/>
-                <flow>
-                    <on action="selection">
-                        <update/>
-                    </on>
-                </flow>
-                <config>
-                    <property name="items">
-                        <function-rv id="system:scatter.2">
-                            <context-rv input-key="selectedTopologyType"/>
-                        </function-rv>
-                    </property>
-                    <property name="itemLabel">
-                        <function-rv id="system:scatter.4">
-                            <context-rv input-key="currentItem"/>
-                        </function-rv>
-                    </property>
-                </config>
-            </view>
-        </window>
-        <window id="4" view="system:scatter.1">
-            <size/>
-            <context>
-                <entry key="labelText">
-                    <i18n-rv key="system:scatter.plain.18"/>
-                </entry>
-            </context>
-            <config>
-                <property name="column">
-                    <integer value="6"/>
-                </property>
-            </config>
-            <config-override type="component.wcf.label:Root">
-                <property name="label">
-                    <context-rv input-key="labelText" renderer-id="system:scatter.3"/>
-                </property>
-            </config-override>
-        </window>
-        <window id="5" view="nested">
-            <size/>
-            <config>
-                <property name="column">
-                    <integer value="7"/>
-                </property>
-            </config>
-            <view id="nested" display-name="yaxis" ts="1511939390785" public="false" component="wcf.drop-down">
-                <inputs>
-                    <entry key="selectedTopologyType" data-type="wcf:String"/>
-                    <entry key="selectedY" data-type="wcf:String" usage="optional" implicit="true"/>
-                </inputs>
-                <generated-context output-key="selectedItem" custom-key="selectedY"/>
-                <flow>
-                    <on action="selection">
-                        <update/>
-                    </on>
-                </flow>
-                <config>
-                    <property name="items">
-                        <function-rv id="system:scatter.2">
-                            <context-rv input-key="selectedTopologyType"/>
-                        </function-rv>
-                    </property>
-                    <property name="itemLabel">
-                        <function-rv id="system:scatter.4">
-                            <context-rv input-key="currentItem"/>
-                        </function-rv>
-                    </property>
-                </config>
-            </view>
         </window>
         <window id="2" view="system:scatter.dSUsedVsDSAllocated">
-            <size width="1200"/>
+            <size/>
             <config>
-                <property name="colspan">
-                    <integer value="8"/>
-                </property>
                 <property name="row">
                     <integer value="1"/>
                 </property>
+                <property name="align">
+                    <enum value="stretch"/>
+                </property>
                 <property name="valign">
                     <enum value="stretch"/>
+                </property>
+                <property name="hweight">
+                    <integer value="1"/>
                 </property>
                 <property name="vweight">
                     <integer value="1"/>
@@ -500,16 +356,19 @@
             </config>
         </window>
         <window id="10" view="system:scatter.8">
-            <size width="1200"/>
+            <size/>
             <config>
-                <property name="colspan">
-                    <integer value="8"/>
-                </property>
                 <property name="row">
                     <integer value="2"/>
                 </property>
+                <property name="align">
+                    <enum value="stretch"/>
+                </property>
                 <property name="valign">
                     <enum value="stretch"/>
+                </property>
+                <property name="hweight">
+                    <integer value="1"/>
                 </property>
                 <property name="vweight">
                     <integer value="1"/>
@@ -1005,6 +864,306 @@
             </property>
         </config>
     </view>
+    <composite-view id="14" display-name="Select Options Column Layout" ts="1517551053596" public="false" component="wcf.column-layout">
+        <uuid>da053901-e4c9-4109-ba98-fbaa1afcaaa7</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectedTopologyType" data-type="wcf:String"/>
+            <entry key="selectedY" data-type="wcf:String"/>
+            <entry key="selectedX" data-type="wcf:String"/>
+            <entry key="selectedDatastores" data-type="foglight-5:VMWDatastore" list="true"/>
+            <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter"/>
+            <entry key="colorMetric" data-type="wcf:String"/>
+            <entry key="colorPattern" data-type="wcf:String"/>
+        </inputs>
+        <flow/>
+        <config/>
+        <window id="0" view="system:test20tree20map.2">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:scatter.plain.9"/>
+                </entry>
+            </context>
+            <config/>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:scatter.3"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="1" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="1"/>
+                </property>
+            </config>
+            <view id="nested" display-name="topologyType" ts="1517551874492" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopologyType" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedTopologyType"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <list-rv remove-nulls="false" remove-dups="false">
+                            <i18n-rv key="system:scatter.plain.11"/>
+                            <i18n-rv key="system:scatter.plain.10"/>
+                        </list-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:scatter.5">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="2" view="system:scatter.1">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:scatter.plain.20"/>
+                </entry>
+            </context>
+            <config>
+                <property name="column">
+                    <integer value="2"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:scatter.3"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="3" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="3"/>
+                </property>
+            </config>
+            <view id="nested" display-name="vc" ts="1517552006478" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedVc"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <function-rv id="system:scatter.6"/>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="4" view="system:scatter.1">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:scatter.plain.12"/>
+                </entry>
+            </context>
+            <config>
+                <property name="column">
+                    <integer value="4"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:scatter.3"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="5" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="5"/>
+                </property>
+            </config>
+            <view id="nested" display-name="type" ts="1517552203679" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopologyType" data-type="wcf:String"/>
+                    <entry key="selectedX" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedX"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <function-rv id="system:scatter.2">
+                            <context-rv input-key="selectedTopologyType"/>
+                        </function-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:scatter.4">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="6" view="system:scatter.1">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:scatter.plain.18"/>
+                </entry>
+            </context>
+            <config>
+                <property name="column">
+                    <integer value="6"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:scatter.3"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="7" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="7"/>
+                </property>
+            </config>
+            <view id="nested" display-name="yaxis" ts="1517552356976" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopologyType" data-type="wcf:String"/>
+                    <entry key="selectedY" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedY"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <function-rv id="system:scatter.2">
+                            <context-rv input-key="selectedTopologyType"/>
+                        </function-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:scatter.4">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="8" view="system:scatter.1">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:scatter.plain.41"/>
+                </entry>
+            </context>
+            <config>
+                <property name="column">
+                    <integer value="8"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:scatter.3"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="9" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="9"/>
+                </property>
+            </config>
+            <view id="nested" display-name="Color Metric" ts="1517552504264" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopologyType" data-type="wcf:String"/>
+                    <entry key="colorMetric" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="colorMetric"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <function-rv id="system:scatter.2">
+                            <context-rv input-key="selectedTopologyType"/>
+                        </function-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:scatter.4">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="10" view="system:scatter.1">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:scatter.plain.43"/>
+                </entry>
+            </context>
+            <config>
+                <property name="column">
+                    <integer value="10"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:scatter.3"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="11" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="11"/>
+                </property>
+            </config>
+            <view id="nested" display-name="color pattern" ts="1517552666213" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="colorPattern" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="colorPattern"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <list-rv merge="true" remove-nulls="true" remove-dups="true">
+                            <i18n-rv key="system:scatter.plain.44"/>
+                            <i18n-rv key="system:scatter.plain.45"/>
+                        </list-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+    </composite-view>
     <renderer id="3" display-name="Text: Gray, bold" ts="1511937418770" handler="wcf.text" value-type="wcf:String">
         <uuid>b08974d6-a81d-4a39-9c7f-ba437d097a9a</uuid>
         <config>
@@ -1204,4 +1363,20 @@
             </value>
         </map-entry>
     </map-function>
+    <script-function type="groovy" id="getMaxMetricValueForSpecificType" display-name="Get Max Metric Value For Specific Type" ts="1517464611172" public="false" output-type="wcf:Number" cache-results="true">
+        <uuid>7212ea64-9663-40d1-9288-46670375f59b</uuid>
+        <inputs>
+            <input name="selectedTopologyType" type-name="wcf:String"/>
+            <input name="selectedVc" type-name="foglight-5:VMWVirtualCenter"/>
+            <input name="colorMetric" type-name="wcf:String"/>
+        </inputs>
+    </script-function>
+    <script-function type="groovy" id="generateColorBySelectedMetric" display-name="Generate Color By Selected Metric" ts="1517553610019" public="false" output-type="wcf:Color" cache-results="true">
+        <uuid>b7171e18-f4b7-40c4-a019-64747fd51572</uuid>
+        <inputs>
+            <input name="metricValue" type-name="wcf:Number"/>
+            <input name="maxMetricValue" type-name="wcf:Number"/>
+            <input name="selectColorPattern" type-name="wcf:String"/>
+        </inputs>
+    </script-function>
 </module>

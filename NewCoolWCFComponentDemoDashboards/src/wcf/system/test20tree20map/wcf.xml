@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3-027" display-name="Test Tree Map" last-entity-id="2">
-    <view id="testWithDatastoreSpaceAvailable" display-name="Test With Datastore Space Available" ts="1512096653227" public="false" component="wcf.treemap">
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3-027" display-name="HeatMap Preview" last-entity-id="3" parent="system:cj_dev_environment20insights">
+    <query select="foglight-5:FSMService" id="queryAllServices" display-name="Query All Services" ts="1526526509587" public="false">
+        <uuid>79d581f5-4ecd-48ac-9d7a-c65b66648902</uuid>
+        <root>
+            <datasource-root-reference datasource-type="foglight-5" path="FSMServiceRoot/services"/>
+        </root>
+    </query>
+    <view id="testWithDatastoreSpaceAvailable" display-name="Test With Datastore Space Available" ts="1517540688679" public="false" component="wcf.treemap">
         <uuid>11c2e5ba-e3f0-4cfe-9358-4ae84af3f982</uuid>
         <purpose name="page"/>
         <purpose name="pagelet"/>
@@ -9,6 +15,8 @@
             <entry key="selectedMetric" data-type="wcf:String"/>
             <entry key="selectedTopology" data-type="wcf:String"/>
             <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter"/>
+            <entry key="selectedColorMetric" data-type="wcf:String"/>
+            <entry key="selectColorPattern" data-type="wcf:String"/>
         </inputs>
         <context>
             <entry key="inputObjs">
@@ -16,6 +24,8 @@
                     <context-rv input-key="selectedMetric"/>
                     <context-rv input-key="selectedTopology"/>
                     <context-rv input-key="selectedVc"/>
+                    <context-rv input-key="selectedColorMetric"/>
+                    <context-rv input-key="selectColorPattern"/>
                 </function-rv>
             </entry>
         </context>
@@ -45,9 +55,6 @@
             <property name="objectRoot">
                 <context-rv input-key="inputObjs"/>
             </property>
-            <property name="strokeColor">
-                <color value="white"/>
-            </property>
             <property name="dataTypeParent">
                 <object>
                     <property name="type">
@@ -61,6 +68,9 @@
                     </property>
                     <property name="displayNumber">
                         <context-rv input-key="currentNode" path="count"/>
+                    </property>
+                    <property name="fillColor">
+                        <context-rv input-key="currentNode" path="fillColor"/>
                     </property>
                 </object>
             </property>
@@ -104,9 +114,11 @@
             </property>
         </config>
     </view>
-    <composite-view id="treeMapWithDatastoreAvailable" display-name="Tree Map With Datastore Available" ts="1512095972641" public="false" component="wcf.grid2">
+    <composite-view id="treeMapWithDatastoreAvailable" display-name="Vmware Heatmap Preview" ts="1519806820549" public="false" component="wcf.grid2">
         <uuid>36c30469-0ce1-46ce-a137-535037a6d23c</uuid>
+        <purpose name="dashboard"/>
         <purpose name="homepage"/>
+        <purpose name="standardView"/>
         <relevant-role name="Administrator"/>
         <relevant-role name="Operator"/>
         <inputs>
@@ -117,7 +129,15 @@
             <entry key="selectedMetric" data-type="wcf:String" usage="internal">
                 <string xml:space="preserve">cpuUtilization</string>
             </entry>
-            <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter" usage="internal"/>
+            <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter" usage="internal">
+                <null-rv/>
+            </entry>
+            <entry key="selectedColorMetric" data-type="wcf:String" usage="internal">
+                <string xml:space="preserve">cpuUtilization</string>
+            </entry>
+            <entry key="selectColorPattern" data-type="wcf:String" usage="internal">
+                <null-rv/>
+            </entry>
         </inputs>
         <context>
             <entry key="vcs">
@@ -132,157 +152,42 @@
             <property name="title">
                 <string xml:space="preserve">Tree Map With Datastore Space Data</string>
             </property>
+            <property name="icon">
+                <icon-ref value="system:virtualvmw.clusterDatastore"/>
+            </property>
+            <property name="pageOptions">
+                <object>
+                    <property name="navigationIcon">
+                        <icon-ref value="system:virtualvmw.clusterDatastore"/>
+                    </property>
+                </object>
+            </property>
         </config>
-        <window id="6" view="system:test20tree20map.2">
-            <size/>
-            <context>
-                <entry key="labelText">
-                    <i18n-rv key="system:test20tree20map.plain.13"/>
-                </entry>
-            </context>
-            <config/>
-            <config-override type="component.wcf.label:Root">
-                <property name="label">
-                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
-                </property>
-            </config-override>
-        </window>
-        <window id="7" view="nested">
-            <size/>
+        <window id="2" view="system:test20tree20map.selectColorPattern">
+            <size height="45"/>
             <config>
-                <property name="column">
+                <property name="align">
+                    <enum value="stretch"/>
+                </property>
+                <property name="hweight">
                     <integer value="1"/>
                 </property>
             </config>
-            <view id="nested" display-name="topologyType" ts="1511925078034" public="false" component="wcf.drop-down">
-                <inputs>
-                    <entry key="selectedTopology" data-type="wcf:String" usage="optional" implicit="true"/>
-                </inputs>
-                <generated-context output-key="selectedItem" custom-key="selectedTopology"/>
-                <flow>
-                    <on action="selection">
-                        <update/>
-                    </on>
-                </flow>
-                <config>
-                    <property name="items">
-                        <list-rv merge="true" remove-nulls="true" remove-dups="true">
-                            <i18n-rv key="system:test20tree20map.plain.14"/>
-                            <i18n-rv key="system:test20tree20map.plain.15"/>
-                        </list-rv>
-                    </property>
-                    <property name="itemLabel">
-                        <function-rv id="system:test20tree20map.topologyDisplayNameMapping">
-                            <context-rv input-key="currentItem"/>
-                        </function-rv>
-                    </property>
-                </config>
-            </view>
-        </window>
-        <window id="4" view="system:test20tree20map.2">
-            <size/>
-            <context>
-                <entry key="labelText">
-                    <i18n-rv key="system:test20tree20map.plain.12"/>
-                </entry>
-            </context>
-            <config>
-                <property name="column">
-                    <integer value="2"/>
-                </property>
-            </config>
-            <config-override type="component.wcf.label:Root">
-                <property name="label">
-                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
-                </property>
-            </config-override>
-        </window>
-        <window id="5" view="nested">
-            <size/>
-            <config>
-                <property name="column">
-                    <integer value="3"/>
-                </property>
-            </config>
-            <view id="nested" display-name="vc list" ts="1511860424124" public="false" component="wcf.drop-down">
-                <inputs>
-                    <entry key="vcs" data-type="foglight-5:VMWVirtualCenter" list="true"/>
-                    <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter" usage="optional" implicit="true"/>
-                </inputs>
-                <generated-context output-key="selectedItem" custom-key="selectedVc"/>
-                <flow>
-                    <on action="selection">
-                        <update/>
-                    </on>
-                </flow>
-                <config>
-                    <property name="items">
-                        <context-rv input-key="vcs"/>
-                    </property>
-                </config>
-            </view>
-        </window>
-        <window id="2" view="system:test20tree20map.2">
-            <size/>
-            <context>
-                <entry key="labelText">
-                    <i18n-rv key="system:test20tree20map.plain.21"/>
-                </entry>
-            </context>
-            <config>
-                <property name="column">
-                    <integer value="4"/>
-                </property>
-            </config>
-            <config-override type="component.wcf.label:Root">
-                <property name="label">
-                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
-                </property>
-            </config-override>
-        </window>
-        <window id="3" view="nested">
-            <size/>
-            <config>
-                <property name="column">
-                    <integer value="5"/>
-                </property>
-            </config>
-            <view id="nested" display-name="Selected Metric" ts="1511925565645" public="false" component="wcf.drop-down">
-                <inputs>
-                    <entry key="selectedTopology" data-type="wcf:String"/>
-                    <entry key="selectedMetric" data-type="wcf:String" usage="optional" implicit="true"/>
-                </inputs>
-                <generated-context output-key="selectedItem" custom-key="selectedMetric"/>
-                <flow>
-                    <on action="selection">
-                        <update/>
-                    </on>
-                </flow>
-                <config>
-                    <property name="items">
-                        <function-rv id="system:test20tree20map.getMetricByTopologyType">
-                            <context-rv input-key="selectedTopology"/>
-                        </function-rv>
-                    </property>
-                    <property name="itemLabel">
-                        <function-rv id="system:test20tree20map.datastoreMetricDisplayNameMapping">
-                            <context-rv input-key="currentItem"/>
-                        </function-rv>
-                    </property>
-                </config>
-            </view>
         </window>
         <window id="0" view="system:test20tree20map.testWithDatastoreSpaceAvailable">
-            <size width="1000"/>
+            <size/>
             <config>
-                <property name="colspan">
-                    <integer value="6"/>
-                </property>
                 <property name="row">
                     <integer value="1"/>
                 </property>
+                <property name="align">
+                    <enum value="stretch"/>
+                </property>
                 <property name="valign">
                     <enum value="stretch"/>
+                </property>
+                <property name="hweight">
+                    <integer value="1"/>
                 </property>
                 <property name="vweight">
                     <integer value="1"/>
@@ -290,16 +195,22 @@
             </config>
         </window>
         <window id="8" view="system:test20tree20map.switchByValueDisplayVMwareObj">
-            <size width="1000"/>
+            <size/>
             <config>
-                <property name="colspan">
-                    <integer value="6"/>
+                <property name="collapsed">
+                    <boolean value="true"/>
                 </property>
                 <property name="row">
                     <integer value="2"/>
                 </property>
+                <property name="align">
+                    <enum value="stretch"/>
+                </property>
                 <property name="valign">
                     <enum value="stretch"/>
+                </property>
+                <property name="hweight">
+                    <integer value="1"/>
                 </property>
                 <property name="vweight">
                     <integer value="1"/>
@@ -335,7 +246,7 @@
             </property>
         </config>
     </view>
-    <view id="switchByValueDisplayVMwareObj" display-name="Switch By Value - Display VMware Obj" ts="1511941862686" component="wcf.switch-value">
+    <view id="switchByValueDisplayVMwareObj" display-name="Switch By Value - Display VMware Obj" ts="1517977610944" component="wcf.switch-value">
         <uuid>55d73ed9-77d9-4767-948a-c4548e387b09</uuid>
         <purpose name="page"/>
         <purpose name="pagelet"/>
@@ -387,6 +298,1059 @@
             </property>
         </config>
     </view>
+    <composite-view id="selectOptionsColumnLayout" display-name="Select Options Column Layout" ts="1518404846348" public="false" component="wcf.column-layout">
+        <uuid>1cb4f005-2ba2-4b55-9a60-47089de8b205</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectedTopology" data-type="wcf:String"/>
+            <entry key="selectedMetric" data-type="wcf:String"/>
+            <entry key="selectedColorMetric" data-type="wcf:String"/>
+            <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter"/>
+            <entry key="vcs" data-type="foglight-5:VMWVirtualCenter" list="true"/>
+            <entry key="selectColorPattern" data-type="wcf:String"/>
+        </inputs>
+        <flow/>
+        <config/>
+        <window id="0" view="system:test20tree20map.2">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:test20tree20map.plain.13"/>
+                </entry>
+            </context>
+            <config>
+                <property name="valign">
+                    <enum value="stretch"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="1" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="1"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <view id="nested" display-name="topologyType" ts="1517538631742" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopology" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedTopology"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <list-rv merge="true" remove-nulls="true" remove-dups="true">
+                            <i18n-rv key="system:test20tree20map.plain.14"/>
+                            <i18n-rv key="system:test20tree20map.plain.15"/>
+                        </list-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:test20tree20map.topologyDisplayNameMapping">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="2" view="system:test20tree20map.2">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:test20tree20map.plain.12"/>
+                </entry>
+            </context>
+            <config>
+                <property name="column">
+                    <integer value="2"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="3" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="3"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <view id="nested" display-name="vc list" ts="1517538845945" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="vcs" data-type="foglight-5:VMWVirtualCenter" list="true"/>
+                    <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedVc"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <context-rv input-key="vcs"/>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="4" view="system:test20tree20map.2">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:test20tree20map.plain.23"/>
+                </entry>
+            </context>
+            <config>
+                <property name="column">
+                    <integer value="4"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="5" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="5"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <view id="nested" display-name="Selected Metric" ts="1517539083098" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopology" data-type="wcf:String"/>
+                    <entry key="selectedMetric" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedMetric"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <function-rv id="system:test20tree20map.getMetricByTopologyType">
+                            <context-rv input-key="selectedTopology"/>
+                        </function-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:test20tree20map.datastoreMetricDisplayNameMapping">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="6" view="system:test20tree20map.2">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:test20tree20map.plain.22"/>
+                </entry>
+            </context>
+            <config>
+                <property name="column">
+                    <integer value="6"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="7" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="7"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <view id="nested" display-name="Color Metric" ts="1517539318783" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopology" data-type="wcf:String"/>
+                    <entry key="selectedColorMetric" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedColorMetric"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <function-rv id="system:test20tree20map.getMetricByTopologyType">
+                            <context-rv input-key="selectedTopology"/>
+                        </function-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:test20tree20map.datastoreMetricDisplayNameMapping">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="8" view="system:test20tree20map.selectColorPattern">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="8"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+        </window>
+    </composite-view>
+    <composite-view id="dispalyVMwareObj" display-name="Dispaly VMware Obj" ts="1517974405602" public="false" component="wcf.row-layout">
+        <uuid>bf88b4f5-28ff-4fe8-b44b-f9999f524ab6</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectedTopology" data-type="wcf:String"/>
+            <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter"/>
+            <entry key="selectedMetric" data-type="wcf:String"/>
+        </inputs>
+        <flow/>
+        <config>
+            <property name="allowCollapse">
+                <boolean value="true"/>
+            </property>
+        </config>
+        <window id="0" view="system:test20tree20map.switchByValueDisplayVMwareObj">
+            <size/>
+            <config>
+                <property name="align">
+                    <enum value="stretch"/>
+                </property>
+                <property name="valign">
+                    <enum value="stretch"/>
+                </property>
+                <property name="hweight">
+                    <integer value="1"/>
+                </property>
+                <property name="vweight">
+                    <integer value="1"/>
+                </property>
+            </config>
+        </window>
+    </composite-view>
+    <composite-view id="selectColorPattern" display-name="Select Color Pattern" ts="1526261870667" public="false" component="wcf.grid2">
+        <uuid>2df22499-cc55-4204-af63-09ca76a4a01f</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectColorPattern" data-type="wcf:String"/>
+            <entry key="selectedTopology" data-type="wcf:String"/>
+            <entry key="selectedMetric" data-type="wcf:String"/>
+            <entry key="selectedColorMetric" data-type="wcf:String"/>
+            <entry key="selectedVc" data-type="foglight-5:VMWVirtualCenter"/>
+            <entry key="vcs" data-type="foglight-5:VMWVirtualCenter" list="true"/>
+        </inputs>
+        <flow/>
+        <config/>
+        <window id="4" view="system:test20tree20map.2">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:test20tree20map.plain.13"/>
+                </entry>
+            </context>
+            <config>
+                <property name="rowspan">
+                    <integer value="2"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="5" view="nested">
+            <size/>
+            <config>
+                <property name="rowspan">
+                    <integer value="2"/>
+                </property>
+                <property name="column">
+                    <integer value="1"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <view id="nested" display-name="topologyType" ts="1518405738269" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopology" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedTopology"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <list-rv remove-nulls="false" remove-dups="false">
+                            <i18n-rv key="system:test20tree20map.plain.14"/>
+                            <i18n-rv key="system:test20tree20map.plain.15"/>
+                        </list-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:test20tree20map.topologyDisplayNameMapping">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="6" view="system:test20tree20map.2">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:test20tree20map.plain.12"/>
+                </entry>
+            </context>
+            <config>
+                <property name="rowspan">
+                    <integer value="2"/>
+                </property>
+                <property name="column">
+                    <integer value="2"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="7" view="nested">
+            <size/>
+            <config>
+                <property name="rowspan">
+                    <integer value="2"/>
+                </property>
+                <property name="column">
+                    <integer value="3"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <view id="nested" display-name="vc list" ts="1518405857704" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="vcs" data-type="wcf:Object" list="true"/>
+                    <entry key="selectedVc" data-type="wcf:Object" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedVc"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <context-rv input-key="vcs"/>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="8" view="system:test20tree20map.2">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:test20tree20map.plain.23"/>
+                </entry>
+            </context>
+            <config>
+                <property name="rowspan">
+                    <integer value="2"/>
+                </property>
+                <property name="column">
+                    <integer value="4"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="9" view="nested">
+            <size/>
+            <config>
+                <property name="rowspan">
+                    <integer value="2"/>
+                </property>
+                <property name="column">
+                    <integer value="5"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <view id="nested" display-name="Selected Metric" ts="1518406034345" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopology" data-type="wcf:String"/>
+                    <entry key="selectedMetric" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedMetric"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <function-rv id="system:test20tree20map.getMetricByTopologyType">
+                            <context-rv input-key="selectedTopology"/>
+                        </function-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:test20tree20map.datastoreMetricDisplayNameMapping">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="10" view="system:test20tree20map.2">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:test20tree20map.plain.22"/>
+                </entry>
+            </context>
+            <config>
+                <property name="rowspan">
+                    <integer value="2"/>
+                </property>
+                <property name="column">
+                    <integer value="6"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="11" view="nested">
+            <size/>
+            <config>
+                <property name="rowspan">
+                    <integer value="2"/>
+                </property>
+                <property name="column">
+                    <integer value="7"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <view id="nested" display-name="Color Metric" ts="1526261870402" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedTopology" data-type="wcf:String"/>
+                    <entry key="selectedColorMetric" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedColorMetric"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <function-rv id="system:test20tree20map.getMetricByTopologyTypeForColorMetrics">
+                            <context-rv input-key="selectedTopology"/>
+                        </function-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:test20tree20map.datastoreMetricDisplayNameMapping">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="3" view="system:test20tree20map.2">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:test20tree20map.plain.36"/>
+                </entry>
+            </context>
+            <config>
+                <property name="rowspan">
+                    <integer value="2"/>
+                </property>
+                <property name="column">
+                    <integer value="8"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="0" view="nested">
+            <size/>
+            <config>
+                <property name="rowspan">
+                    <integer value="2"/>
+                </property>
+                <property name="column">
+                    <integer value="9"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <view id="nested" display-name="color pattern" ts="1519697714383" public="false" component="wcf.radio-button">
+                <inputs>
+                    <entry key="selectColorPattern" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectColorPattern"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <list-rv merge="true" remove-nulls="true" remove-dups="true">
+                            <i18n-rv key="system:test20tree20map.plain.26"/>
+                            <i18n-rv key="system:test20tree20map.plain.25"/>
+                        </list-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <string-rv>
+                            <value xml:space="preserve"> </value>
+                        </string-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="1" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="10"/>
+                </property>
+                <property name="showBorder">
+                    <boolean value="true"/>
+                </property>
+            </config>
+            <view id="nested" display-name="test Icon" ts="1519697796951" public="false" component="wcf.label">
+                <flow>
+                    <on action="selection">
+                        <generated-context output-key="item" custom-key="selectColorPattern"/>
+                        <update>
+                            <context>
+                                <entry key="selectColorPattern">
+                                    <i18n-rv key="system:test20tree20map.plain.26"/>
+                                </entry>
+                            </context>
+                        </update>
+                    </on>
+                </flow>
+                <config>
+                    <property name="label">
+                        <icon-rv id="system:test20tree20map.hightoLow" renderer-id="system:test20tree20map.IconHuge"/>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="2" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="10"/>
+                </property>
+                <property name="row">
+                    <integer value="1"/>
+                </property>
+                <property name="showBorder">
+                    <boolean value="true"/>
+                </property>
+            </config>
+            <view id="nested" display-name="test1" ts="1519697847337" public="false" component="wcf.label">
+                <flow>
+                    <on action="selection">
+                        <generated-context output-key="item" custom-key="selectColorPattern"/>
+                        <update>
+                            <context>
+                                <entry key="selectColorPattern">
+                                    <i18n-rv key="system:test20tree20map.plain.25"/>
+                                </entry>
+                            </context>
+                        </update>
+                    </on>
+                </flow>
+                <config>
+                    <property name="label">
+                        <icon-rv id="system:test20tree20map.lowtoHigh" renderer-id="system:test20tree20map.IconHuge"/>
+                    </property>
+                </config>
+            </view>
+        </window>
+    </composite-view>
+    <view id="highToLow" display-name="HighToLow" ts="1518403199496" public="false" component="wcf.label">
+        <uuid>1174abd8-5cb8-4d5d-9c2f-41fb24f9b993</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+        </inputs>
+        <flow/>
+        <config>
+            <property name="label">
+                <icon-rv id="system:test20tree20map.hightoLow" renderer-id="system:test20tree20map.IconHuge"/>
+            </property>
+        </config>
+    </view>
+    <composite-view id="selectColorPatternForServices" display-name="Select Color Pattern For Services" ts="1526527426421" public="false" component="wcf.grid2">
+        <uuid>3cc21fd6-354e-46a0-9b50-0ea0d2aed927</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectColorPattern" data-type="wcf:String"/>
+            <entry key="selectedMetric" data-type="wcf:String"/>
+            <entry key="selectedColorMetric" data-type="wcf:String"/>
+        </inputs>
+        <flow/>
+        <config/>
+        <window id="4" view="system:test20tree20map.2">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:test20tree20map.plain.48"/>
+                </entry>
+            </context>
+            <config>
+                <property name="rowspan">
+                    <integer value="2"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="9" view="nested">
+            <size/>
+            <config>
+                <property name="rowspan">
+                    <integer value="2"/>
+                </property>
+                <property name="column">
+                    <integer value="1"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <view id="nested" display-name="Selected Metric" ts="1526526326005" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedMetric" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedMetric"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <list-rv merge="true" remove-nulls="true" remove-dups="true">
+                            <i18n-rv key="system:test20tree20map.plain.44"/>
+                            <i18n-rv key="system:test20tree20map.plain.45"/>
+                        </list-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:test20tree20map.datastoreMetricDisplayNameMapping">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="10" view="system:test20tree20map.2">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:test20tree20map.plain.22"/>
+                </entry>
+            </context>
+            <config>
+                <property name="rowspan">
+                    <integer value="2"/>
+                </property>
+                <property name="column">
+                    <integer value="2"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="11" view="nested">
+            <size/>
+            <config>
+                <property name="rowspan">
+                    <integer value="2"/>
+                </property>
+                <property name="column">
+                    <integer value="3"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <view id="nested" display-name="Color Metric" ts="1526526347293" public="false" component="wcf.drop-down">
+                <inputs>
+                    <entry key="selectedColorMetric" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectedColorMetric"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <list-rv merge="true" remove-nulls="true" remove-dups="true">
+                            <i18n-rv key="system:test20tree20map.plain.44"/>
+                            <i18n-rv key="system:test20tree20map.plain.45"/>
+                        </list-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <function-rv id="system:test20tree20map.datastoreMetricDisplayNameMapping">
+                            <context-rv input-key="currentItem"/>
+                        </function-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="3" view="system:test20tree20map.2">
+            <size/>
+            <context>
+                <entry key="labelText">
+                    <i18n-rv key="system:test20tree20map.plain.36"/>
+                </entry>
+            </context>
+            <config>
+                <property name="rowspan">
+                    <integer value="2"/>
+                </property>
+                <property name="column">
+                    <integer value="4"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <config-override type="component.wcf.label:Root">
+                <property name="label">
+                    <context-rv input-key="labelText" renderer-id="system:test20tree20map.1"/>
+                </property>
+            </config-override>
+        </window>
+        <window id="0" view="nested">
+            <size/>
+            <config>
+                <property name="rowspan">
+                    <integer value="2"/>
+                </property>
+                <property name="column">
+                    <integer value="5"/>
+                </property>
+                <property name="valign">
+                    <enum value="middle"/>
+                </property>
+            </config>
+            <view id="nested" display-name="color pattern" ts="1519697714383" public="false" component="wcf.radio-button">
+                <inputs>
+                    <entry key="selectColorPattern" data-type="wcf:String" usage="optional" implicit="true"/>
+                </inputs>
+                <generated-context output-key="selectedItem" custom-key="selectColorPattern"/>
+                <flow>
+                    <on action="selection">
+                        <update/>
+                    </on>
+                </flow>
+                <config>
+                    <property name="items">
+                        <list-rv merge="true" remove-nulls="true" remove-dups="true">
+                            <i18n-rv key="system:test20tree20map.plain.26"/>
+                            <i18n-rv key="system:test20tree20map.plain.25"/>
+                        </list-rv>
+                    </property>
+                    <property name="itemLabel">
+                        <string-rv>
+                            <value xml:space="preserve"> </value>
+                        </string-rv>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="1" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="6"/>
+                </property>
+                <property name="showBorder">
+                    <boolean value="true"/>
+                </property>
+            </config>
+            <view id="nested" display-name="test Icon" ts="1519697796951" public="false" component="wcf.label">
+                <flow>
+                    <on action="selection">
+                        <generated-context output-key="item" custom-key="selectColorPattern"/>
+                        <update>
+                            <context>
+                                <entry key="selectColorPattern">
+                                    <i18n-rv key="system:test20tree20map.plain.26"/>
+                                </entry>
+                            </context>
+                        </update>
+                    </on>
+                </flow>
+                <config>
+                    <property name="label">
+                        <icon-rv id="system:test20tree20map.hightoLow" renderer-id="system:test20tree20map.IconHuge"/>
+                    </property>
+                </config>
+            </view>
+        </window>
+        <window id="2" view="nested">
+            <size/>
+            <config>
+                <property name="column">
+                    <integer value="6"/>
+                </property>
+                <property name="row">
+                    <integer value="1"/>
+                </property>
+                <property name="showBorder">
+                    <boolean value="true"/>
+                </property>
+            </config>
+            <view id="nested" display-name="test1" ts="1519697847337" public="false" component="wcf.label">
+                <flow>
+                    <on action="selection">
+                        <generated-context output-key="item" custom-key="selectColorPattern"/>
+                        <update>
+                            <context>
+                                <entry key="selectColorPattern">
+                                    <i18n-rv key="system:test20tree20map.plain.25"/>
+                                </entry>
+                            </context>
+                        </update>
+                    </on>
+                </flow>
+                <config>
+                    <property name="label">
+                        <icon-rv id="system:test20tree20map.lowtoHigh" renderer-id="system:test20tree20map.IconHuge"/>
+                    </property>
+                </config>
+            </view>
+        </window>
+    </composite-view>
+    <composite-view id="3" display-name="Service Heatmap Preview" ts="1526528332041" public="false" component="wcf.grid2">
+        <uuid>63b9e93c-e80c-440a-81f3-5657723983e1</uuid>
+        <purpose name="dashboard"/>
+        <purpose name="homepage"/>
+        <purpose name="standardView"/>
+        <relevant-role name="Administrator"/>
+        <relevant-role name="Operator"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectedMetric" data-type="wcf:String" usage="internal">
+                <string xml:space="preserve">aggregateAlarms</string>
+            </entry>
+            <entry key="selectedColorMetric" data-type="wcf:String" usage="internal">
+                <string xml:space="preserve">aggregateAlarms</string>
+            </entry>
+            <entry key="selectColorPattern" data-type="wcf:String" usage="internal">
+                <null-rv/>
+            </entry>
+        </inputs>
+        <flow/>
+        <config>
+            <property name="spacing">
+                <integer value="8"/>
+            </property>
+            <property name="title">
+                <i18n-rv key="system:test20tree20map.plain.49"/>
+            </property>
+            <property name="icon">
+                <icon-ref value="system:virtualvmw.clusterDatastore"/>
+            </property>
+            <property name="pageOptions">
+                <object>
+                    <property name="navigationIcon">
+                        <icon-ref value="system:virtualvmw.clusterDatastore"/>
+                    </property>
+                </object>
+            </property>
+        </config>
+        <window id="2" view="system:test20tree20map.selectColorPatternForServices">
+            <size height="45"/>
+            <config>
+                <property name="align">
+                    <enum value="stretch"/>
+                </property>
+                <property name="hweight">
+                    <integer value="1"/>
+                </property>
+            </config>
+        </window>
+        <window id="1" view="system:test20tree20map.servicesHeatmapchart">
+            <size/>
+            <config>
+                <property name="row">
+                    <integer value="1"/>
+                </property>
+                <property name="align">
+                    <enum value="stretch"/>
+                </property>
+                <property name="valign">
+                    <enum value="stretch"/>
+                </property>
+                <property name="hweight">
+                    <integer value="1"/>
+                </property>
+                <property name="vweight">
+                    <integer value="1"/>
+                </property>
+            </config>
+        </window>
+    </composite-view>
+    <view id="servicesHeatmapchart" display-name="Services Heatmap chart" ts="1526527031414" public="false" component="wcf.treemap">
+        <uuid>adae9537-70ce-453d-9b39-0e291af72e43</uuid>
+        <purpose name="page"/>
+        <purpose name="pagelet"/>
+        <inputs>
+            <entry key="timeRange" data-type="wcf:TimeRange"/>
+            <entry key="selectedMetric" data-type="wcf:String"/>
+            <entry key="selectedColorMetric" data-type="wcf:String"/>
+            <entry key="selectColorPattern" data-type="wcf:String"/>
+        </inputs>
+        <context>
+            <entry key="inputObjs">
+                <function-rv id="system:test20tree20map.buildServiceTreeMapObj">
+                    <context-rv input-key="selectedMetric"/>
+                    <context-rv input-key="selectedColorMetric"/>
+                    <context-rv input-key="selectColorPattern"/>
+                </function-rv>
+            </entry>
+        </context>
+        <flow>
+            <on action="selection">
+                <generated-context output-key="object" custom-key="selectedItem"/>
+                <select-type-flow tag="drilldown" key="datastore">
+                    <context>
+                        <entry key="datastore">
+                            <context-rv input-key="selectedItem" cast-ds-type="test20tree20map" cast-data-type="TreeMapObj" path="ds"/>
+                        </entry>
+                    </context>
+                </select-type-flow>
+            </on>
+        </flow>
+        <config>
+            <property name="objectRoot">
+                <context-rv input-key="inputObjs"/>
+            </property>
+            <property name="dataTypeParent">
+                <object>
+                    <property name="type">
+                        <data-object-type datasource-type="test20tree20map" data-type="TreeMapObj"/>
+                    </property>
+                    <property name="ID">
+                        <context-rv input-key="currentNode" path="id"/>
+                    </property>
+                    <property name="displayName">
+                        <context-rv input-key="currentNode" path="name"/>
+                    </property>
+                    <property name="displayNumber">
+                        <context-rv input-key="currentNode" path="count"/>
+                    </property>
+                    <property name="fillColor">
+                        <context-rv input-key="currentNode" path="fillColor"/>
+                    </property>
+                </object>
+            </property>
+        </config>
+    </view>
     <renderer id="1" display-name="Text: Gray, bold" ts="1511767418245" handler="wcf.text" value-type="wcf:String">
         <uuid>b6aa0417-a61b-42b4-b651-6eb5c7367624</uuid>
         <config>
@@ -398,12 +1362,22 @@
             </property>
         </config>
     </renderer>
-    <script-function type="groovy" id="buildDatasotreTreeMapObj" display-name="Build Datasotre Tree Map Obj" ts="1511926604712" public="false" output-type="wcf:DataObject" output-list="true" cache-results="true">
+    <renderer id="IconHuge" display-name="Icon Huge" ts="1518401658834" public="false" handler="wcf.icon" value-type="wcf:Object">
+        <uuid>eb3852b6-7f02-4381-b59f-1466ecc22392</uuid>
+        <config>
+            <property name="size">
+                <enum value="extraLarge"/>
+            </property>
+        </config>
+    </renderer>
+    <script-function type="groovy" id="buildDatasotreTreeMapObj" display-name="Build Datasotre Tree Map Obj" ts="1528189742148" public="false" output-type="wcf:DataObject" output-list="true" cache-results="true">
         <uuid>6cfe1225-5d40-4fab-ab74-0c9c749b5f67</uuid>
         <inputs>
             <input name="metricName" type-name="wcf:String"/>
             <input name="topologyType" type-name="wcf:String"/>
             <input name="selectedVc" type-name="foglight-5:VMWVirtualCenter"/>
+            <input name="colorMetricName" type-name="wcf:String"/>
+            <input name="selectColorPattern" type-name="wcf:String"/>
         </inputs>
     </script-function>
     <script-function type="groovy" id="getAllDatastores" display-name="Get All Datastores" ts="1511934765450" public="false" output-type="foglight-5:VMWDatastore" output-list="true" cache-results="true">
@@ -412,7 +1386,7 @@
             <input name="selectedVc" type-name="foglight-5:VMWVirtualCenter"/>
         </inputs>
     </script-function>
-    <map-function id="datastoreMetricDisplayNameMapping" display-name="Datastore Metric Display Name Mapping" ts="1513044249472" output-type="wcf:String" cache-results="true" input-type="wcf:String">
+    <map-function id="datastoreMetricDisplayNameMapping" display-name="Datastore Metric Display Name Mapping" ts="1526261850965" output-type="wcf:String" cache-results="true" input-type="wcf:String">
         <uuid>f56d0884-b968-4648-8973-b91ac80ba241</uuid>
         <map-entry>
             <key>
@@ -454,6 +1428,78 @@
                 <string xml:space="preserve">Memory Utilization</string>
             </value>
         </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">readLatency</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Read Latency</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">writeLatency</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Write Latency</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">averageLatency</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Average Latency</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">weeklyGrowthRate</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Weekly Growth Rate</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">cpuContentionScore</string>
+            </key>
+            <value>
+                <string xml:space="preserve">CPU Contention Score</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">memBalloonScore</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Memory Balloon Score</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">maxTotalDiskLatency</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Max Total Disk Latency</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">aggregateAlarms</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Alarm Count</string>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">alarmSeverity</string>
+            </key>
+            <value>
+                <string xml:space="preserve">Alarm Severity</string>
+            </value>
+        </map-entry>
     </map-function>
     <script-function type="groovy" id="getAllVcs" display-name="Get All Vcs" ts="1513044012977" output-type="foglight-5:VMWVirtualCenter" output-list="true" cache-results="true">
         <uuid>e287beaf-e1de-4e36-bee0-8e7ef9ed16b2</uuid>
@@ -477,7 +1523,7 @@
             </value>
         </map-entry>
     </map-function>
-    <script-function type="groovy" id="getMetricByTopologyType" display-name="Get Metric By Topology Type" ts="1513044224904" output-type="wcf:String" output-list="true" cache-results="true">
+    <script-function type="groovy" id="getMetricByTopologyType" display-name="Get Metric By Topology Type" ts="1526261622491" output-type="wcf:String" output-list="true" cache-results="true">
         <uuid>0352b6d1-ec30-4146-a63a-5b250fd905e7</uuid>
         <inputs>
             <input name="topologyType" type-name="wcf:String"/>
@@ -502,10 +1548,186 @@
             </value>
         </map-entry>
     </map-function>
-    <script-function type="groovy" id="getAllVms" display-name="Get All Vms" ts="1511934974532" public="false" output-type="foglight-5:VMWVirtualMachine" output-list="true" cache-results="true">
+    <script-function type="groovy" id="getAllVms" display-name="Get All Vms" ts="1517799996359" public="false" output-type="foglight-5:VMWVirtualMachine" output-list="true" cache-results="true">
         <uuid>67b511af-6928-4fac-b0a4-4585a0d5d835</uuid>
         <inputs>
             <input name="selectedVc" type-name="foglight-5:VMWVirtualCenter"/>
         </inputs>
     </script-function>
+    <map-function id="colorPatternMapping" display-name="Color Pattern Mapping" ts="1517549028940" public="false" output-type="wcf:String" output-list="true" cache-results="true" input-type="wcf:Object">
+        <uuid>01c897e4-eef0-4a06-bf9f-2996ffdd96ad</uuid>
+        <map-entry>
+            <key>
+                <i18n-rv key="system:test20tree20map.plain.25"/>
+            </key>
+            <value>
+                <list-rv merge="true" remove-nulls="true" remove-dups="true">
+                    <string-rv>
+                        <value xml:space="preserve">#CD3333</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#cd6433</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#cd8433</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#cd9933</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#cdb633</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#cdc633</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#bdcd33</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#95cd33</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#76cd33</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#56cd33</value>
+                    </string-rv>
+                </list-rv>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <i18n-rv key="system:test20tree20map.plain.26"/>
+            </key>
+            <value>
+                <list-rv merge="true" remove-nulls="true" remove-dups="true">
+                    <string-rv>
+                        <value xml:space="preserve">#56cd33</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#76cd33</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#95cd33</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#bdcd33</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#cdc633</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#cdb633</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#cd9933</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#cd8433</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#cd6433</value>
+                    </string-rv>
+                    <string-rv>
+                        <value xml:space="preserve">#cd3333</value>
+                    </string-rv>
+                </list-rv>
+            </value>
+        </map-entry>
+    </map-function>
+    <map-function id="getTheIconOfColorPattern" display-name="Get The Icon Of Color Pattern" ts="1518403308257" public="false" output-type="wcf:ImageReference" cache-results="true" input-type="wcf:String">
+        <uuid>f1ba81dc-2d06-40fb-8140-f350895a471a</uuid>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">Red to Green</string>
+            </key>
+            <value>
+                <image value="WCFMODULE:system:test20tree20map/images/HighToLow1.png"/>
+            </value>
+        </map-entry>
+        <map-entry>
+            <key>
+                <string xml:space="preserve">Green to Red</string>
+            </key>
+            <value>
+                <image value="WCFMODULE:system:test20tree20map/images/lowToHigh1.png"/>
+            </value>
+        </map-entry>
+    </map-function>
+    <script-function type="groovy" id="getMetricByTopologyTypeForColorMetrics" display-name="Get Metric By Topology Type For Color Metrics" ts="1526261744538" output-type="wcf:String" output-list="true" cache-results="true">
+        <uuid>10465244-4fb9-4fb2-b32e-5afb4fa3c406</uuid>
+        <inputs>
+            <input name="topologyType" type-name="wcf:String"/>
+        </inputs>
+    </script-function>
+    <script-function type="groovy" id="buildServiceTreeMapObj" display-name="Build Service Tree Map Obj" ts="1526527768043" public="false" output-type="wcf:DataObject" output-list="true" cache-results="true">
+        <uuid>28e49b84-1d63-410a-a3fc-46fb75adc388</uuid>
+        <inputs>
+            <input name="metricName" type-name="wcf:String"/>
+            <input name="colorMetricName" type-name="wcf:String"/>
+            <input name="selectColorPattern" type-name="wcf:String"/>
+        </inputs>
+    </script-function>
+    <icon id="hightoLow" display-name="High to Low" ts="1519806678035" public="false">
+        <uuid>07df8b00-c9c9-43e5-9bac-b2d49260738a</uuid>
+        <config>
+            <property name="large">
+                <object>
+                    <property name="image">
+                        <image value="WCFMODULE:system:test20tree20map/images/HighToLow1.png"/>
+                    </property>
+                    <property name="width">
+                        <integer value="371"/>
+                    </property>
+                    <property name="height">
+                        <integer value="66"/>
+                    </property>
+                </object>
+            </property>
+            <property name="huge">
+                <object>
+                    <property name="image">
+                        <image value="WCFMODULE:system:test20tree20map/images/HighToLow5.png"/>
+                    </property>
+                    <property name="width">
+                        <integer value="347"/>
+                    </property>
+                    <property name="height">
+                        <integer value="18"/>
+                    </property>
+                </object>
+            </property>
+        </config>
+    </icon>
+    <icon id="lowtoHigh" display-name="Low to High" ts="1519806597522" public="false">
+        <uuid>5b9120b6-6a96-4112-b4a8-42bd126a73e9</uuid>
+        <config>
+            <property name="extraLarge">
+                <object>
+                    <property name="image">
+                        <image value="WCFMODULE:system:test20tree20map/images/LowToHigh5.png"/>
+                    </property>
+                    <property name="width">
+                        <integer value="347"/>
+                    </property>
+                    <property name="height">
+                        <integer value="19"/>
+                    </property>
+                </object>
+            </property>
+            <property name="huge">
+                <object>
+                    <property name="image">
+                        <image value="WCFMODULE:system:test20tree20map/images/LowToHigh5.png"/>
+                    </property>
+                    <property name="width">
+                        <integer value="347"/>
+                    </property>
+                    <property name="height">
+                        <integer value="19"/>
+                    </property>
+                </object>
+            </property>
+        </config>
+    </icon>
 </module>
